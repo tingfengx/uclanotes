@@ -9,7 +9,7 @@
   
 ### **Notes in progress:**  
 #### &#128210; 2022 Winter Quarter
-- [**CS262a**](./2020W/CS262a/bayesian.pdf/). Bayesian Networks. The focus of this course is on the theory and practice of knowledge representation and reasoning under uncertainty within the framework of probabilistic graphical models---with a major emphasis on Bayesian belief networks.
+- [**CS262a**](./2022W/CS262a/bayesian.pdf/). Bayesian Networks. The focus of this course is on the theory and practice of knowledge representation and reasoning under uncertainty within the framework of probabilistic graphical models---with a major emphasis on Bayesian belief networks.
   
    
 ## &#x1F4BB; Typesetting in \LaTeX
