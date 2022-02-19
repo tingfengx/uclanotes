@@ -1,0 +1,210 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage[
+    pdftex, 
+    dvipsnames
+]{xcolor}
+\usepackage[
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=Thistle
+]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{xargs}
+\usepackage{ccicons}
+\usepackage{mdframed}
+\usepackage{caption}
+\usepackage{cancel}
+\usepackage[nottoc]{tocbibind}
+%\usepackage[
+%    outputdir=.texpadtmp
+%]{minted}
+
+% ==== License =====
+\usepackage[
+    type={CC}, 
+    modifier={by-nc-sa}, 
+    version={4.0},
+]{doclicense}
+
+% ==== todo notes ====
+\usepackage[
+    colorinlistoftodos,
+    prependcaption,
+    textsize=tiny
+]{todonotes}
+\newcommandx{\note}[2][1=]{\todo[linecolor=Thistle,backgroundcolor=Thistle!25,bordercolor=Thistle,#1]{#2}}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+
+% General
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+% Math Bold Font, Vector Notations
+\newcommand{\ba}{\mathbf{a}}
+\newcommand{\bb}{\mathbf{b}}
+\newcommand{\bc}{\mathbf{c}}
+\newcommand{\bd}{\mathbf{d}}
+\newcommand{\be}{\mathbf{e}}
+\renewcommand{\bf}{\mathbf{f}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bi}{\mathbf{i}}
+\newcommand{\bj}{\mathbf{j}}
+\newcommand{\bk}{\mathbf{k}}
+\newcommand{\bl}{\mathbf{l}}
+\newcommand{\bm}{\mathbf{m}}
+\newcommand{\bn}{\mathbf{n}}
+\newcommand{\bo}{\mathbf{o}}
+\newcommand{\bp}{\mathbf{p}}
+\newcommand{\bq}{\mathbf{q}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\bzero}{\mathbf{0}}
+
+% Proofs, Structures
+\newcommand{\proof}{\tit{\underline{Proof:}}} % This equivalent to the \begin{proof}\end{proof} block
+\newcommand{\proofforward}{\tit{\underline{Proof($\implies$):}}}
+\newcommand{\proofback}{\tit{\underline{Proof($\impliedby$):}}}
+\newcommand{\proofsuperset}{\tit{\underline{Proof($\supseteq$):}}}
+\newcommand{\proofsubset}{\tit{\underline{Proof($\subseteq$):}}}
+\newcommand{\contradiction}{$\longrightarrow\!\longleftarrow$}
+\newcommand{\qed}{\hfill $\blacksquare$}
+
+% Number Spaces, Vector Space
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\complex}{\mathbb{C}}
+\newcommand{\field}{\mathbb{F}}
+
+% customized commands
+\newcommand{\settag}[1]{\renewcommand{\theenumi}{#1}}
+\newcommand{\tbf}[1]{\textbf{#1}}
+\newcommand{\tit}[1]{\textit{#1}}
+\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\double}[1]{\mathbb{#1}} % Set to behave like that on word
+\newcommand{\trans}[3]{$#1:#2\rightarrow{}#3$}
+\newcommand{\map}[3]{\text{$\left[#1\right]_{#2}^{#3}$}}
+\newcommand{\dime}[1]{\mathrm{dim}(#1)}
+\newcommand{\mat}[2]{M_{#1 \times #2}(\R)}
+\newcommand{\aug}{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+\newcommand{\basecase}{\textsc{\underline{Basis Case:}} }
+\newcommand{\inductive}{\textsc{\underline{Inductive Step:}} }
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\independent}{\perp \!\!\! \perp}
+
+\newcommand{\mods}{\mathrm{Mods}}
+\newcommand{\pr}{\mathrm{Pr}}
+\newcommand{\ent}{\mathrm{ENT}}
+\newcommand{\mi}{\mathrm{MI}}
+
+% Set section number in front of equation enumerations
+\counterwithin{equation}{section}
+\counterwithin{footnote}{section}
+\author{\ccLogo\, Tingfeng Xia @ UCLA}
+\title{CS262a Bayesian Networks}
+\date{Winter Quarter, 2022}
+
+\begin{document}
+\maketitle
+\doclicenseThis
+
+\section*{Preface}
+I shall organize everything based on the chapters later. 
+
+
+\subsection{Principle Logical Forms}
+\paragraph{Inconsistent.} Something that never holds; $\mods (\cdot) = \empty$; $\pr(\alpha) = 0$
+\paragraph{Valid.} Somethng that always holds; $\mods (\cdot) = \Omega$; $\pr (\alpha) = 1$
+\paragraph{Equivalent.} $\mods (\alpha) = \mods (\beta)$
+\paragraph{Mutual Exclusive.} $\mods(\alpha) \cap \mods (\beta) = \emptyset$
+\paragraph{Exhaustive.} $\mods (\alpha) \cup \mods (\beta) = \Omega$
+\paragraph{Entailment / Implication.} $\alpha \vDash \beta \triangleq \mods (\alpha) \subseteq \mods ( \beta)$
+
+\subsection{Equivalent Forms}
+\begin{itemize}
+\item $\mods( \alpha \land \beta) = \mods( \alpha) \cap \mods(\beta)$
+\item $\mods( \alpha \vee \beta) = \mods ( \alpha) \cup \mods ( \beta)$
+\item $\mods ( \neg \alpha) = \overbar{\mods ( \alpha)}$
+\end{itemize}
+
+\subsection{Instantiation Agreement}
+Two instantiation, each of which can cover a subset of different varaibles, are said to be compatible with each other if they argree on all common variables. Denoted as $\bx \sim \by$.
+
+\subsection{Information Theory}
+\paragraph{Entropy.} 
+\begin{equation}
+\ent  (X) = - \sum_x \pr (x) \log \pr( x)
+\end{equation}
+where $0 \log 0 = 0 $ by convention. With a higher entropy, we say that it is more chaotic. 
+
+\paragraph{Conditional Entropy. }
+\begin{equation}
+	\ent (X | Y ) = \sum_y \pr (y) \ent(X | y) \quad \text{where} \quad \ent (X|y) = - \sum_{x} \pr(x|y) \log \pr(x | y)
+\end{equation}
+Conditioning never increases the entropy, i.e. 
+\begin{equation}
+	\ent (X | Y) \leq \ent (X)
+\end{equation}
+
+\paragraph{Mutual Information} 
+\begin{align}
+	\mi(X; Y) 
+	&= \sum_{x, y} \pr (x, y) \log \frac{\pr (x, y)}{\pr (x) \pr (y)} \\
+	&= \ent (X) - \ent (X | Y) \\
+	&= \ent (Y) - \ent ( Y | X) 
+\end{align}
+
+\paragraph{Conditional Mutual Information}
+\begin{align}
+	\mi ( X; Y | Z) 
+	&= \sum_{x, y, z} \pr (x, y , z) \log \frac{\pr (x, y | z)}{\pr (x | z) \pr(y | z)} \\
+	&= \ent (X | Z) - \ent (X | Y, Z) \\
+	&= \ent (Y | Z) - \ent (Y | X, Z)
+\end{align}
+
+\subsection{Bayesian Conditioning}
+Bayesian Condition is specified by the formula 
+\begin{equation}
+	\pr ( \alpha | \beta) = \frac{\pr ( \alpha \land \beta )}{\pr ( \beta) }
+\end{equation}
+In particular, not to be confused with Bayesian inference (to be added later). 
+
+\subsection{Independence and Notations}
+\paragraph{Independence.}  
+\begin{align}
+	\alpha \independent \beta 
+	& \iff \pr ( \alpha | \beta) = \pr ( \alpha) \vee \pr( \beta) = 0 \\
+	& \iff \pr ( \alpha \land \beta) = \pr(\alpha) \pr ( \beta)
+\end{align}
+
+\paragraph{Conditional Independence.}
+\begin{align}
+	(\alpha \independent \beta) | \gamma 
+	&\iff \pr ( \alpha | \beta \land \gamma) = \pr ( \alpha | \gamma) \vee \pr(\beta \land \gamma) = 0 \\
+	&\iff \pr ( \alpha \land \beta | \gamma) = \pr ( \alpha | \gamma ) \pr(\beta | \gamma ) \vee \pr ( \gamma) = 1
+\end{align}
+
+\paragraph{Set Independence}
+\begin{equation}
+	I_{\pr} (X, Z, Y) \iff (x \independent y) | z, \quad \forall x, y, z \in X, Y, Z
+\end{equation}
+
+
+
+
+\end{document}
