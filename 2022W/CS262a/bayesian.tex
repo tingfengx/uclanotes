@@ -111,6 +111,7 @@
 \newcommand{\pr}{\mathrm{Pr}}
 \newcommand{\ent}{\mathrm{ENT}}
 \newcommand{\mi}{\mathrm{MI}}
+\newcommand{\dsep}{\mathrm{dsep}}
 
 % Set section number in front of equation enumerations
 \counterwithin{equation}{section}
@@ -126,7 +127,7 @@
 \section*{Preface}
 I shall organize everything based on the chapters later. 
 
-
+\section{Propositional Logic}
 \subsection{Principle Logical Forms}
 \paragraph{Inconsistent.} Something that never holds; $\mods (\cdot) = \empty$; $\pr(\alpha) = 0$
 \paragraph{Valid.} Somethng that always holds; $\mods (\cdot) = \Omega$; $\pr (\alpha) = 1$
@@ -177,6 +178,7 @@ Conditioning never increases the entropy, i.e.
 	&= \ent (Y | Z) - \ent (Y | X, Z)
 \end{align}
 
+\section{Probability Calculus}
 \subsection{Bayesian Conditioning}
 Bayesian Condition is specified by the formula 
 \begin{equation}
@@ -203,6 +205,180 @@ In particular, not to be confused with Bayesian inference (to be added later).
 \begin{equation}
 	I_{\pr} (X, Z, Y) \iff (x \independent y) | z, \quad \forall x, y, z \in X, Y, Z
 \end{equation}
+
+\section{Bayesian Networks}
+\subsection{Soft Evidence}
+\subsubsection{All Things Considered Method}
+We normalize / rescale $w$ according to new evidence. 
+\begin{align}
+\pr' (w) = \begin{cases}
+	\frac{\pr ' (\beta)}{\pr (\beta)} \pr ( w) &  \text{if} w \vDash \beta \\
+	\frac{\pr' (\neg \beta)}{\pr (\neg \beta)} \pr (w) & \text{if} w \vDash \neg \beta
+\end{cases}
+\end{align}
+
+The closed form is called the Jefferey's Rule. 
+
+\paragraph{Jeffery's Rule}
+\begin{equation}
+	\pr ' (\alpha) = q \pr ( \alpha | \beta ) + (1 - q) \pr ( \alpha | \neg \beta)
+\end{equation}
+
+\paragraph{Jeffery's Rule - General Case}
+\begin{equation}
+	\pr'(\alpha) = \sum_{i = 1}^n\pr ' (\beta_i) \pr( \alpha | \beta_i) 
+\end{equation}
+
+\subsubsection{Nothing-else Considered Method}
+\paragraph{Odds. } 
+\begin{equation}
+	O(\beta) = \frac{\pr( \beta)}{\pr ( \neg \beta)}
+\end{equation}
+
+\paragraph{Bayes Factor} 
+\begin{equation}
+	k = \frac{O'(\beta)}{O ( \beta)} = \frac{Pr'(\beta) / \pr'(\neg \beta)}{...}
+\end{equation}
+from where we can expand and organize
+\begin{equation}
+	\pr' ( \beta) = \frac{k \pr ( \beta) }{k \pr ( \beta) + \pr ( \neg \beta) } 
+\end{equation}
+
+\paragraph{Closed Form Solution.}
+\begin{equation}
+	\pr' (\alpha) = \frac{k\pr ( \alpha \land \beta) + \pr (\alpha \land \neg \beta)}{k \pr ( \beta ) + \pr ( \neg \beta)}
+\end{equation}
+
+\subsection{Noisy Sensors}
+\begin{equation}
+	O'(\beta) = \underbrace{\frac{1 - f_n}{f_p}}_{k^+} O(\beta) \quad \quad O'(\beta) = \underbrace{\frac{f_n }{1 - f_p}}_{k^-} O(\beta)
+\end{equation}
+
+\subsection{Markov Assumptions}
+\begin{equation}
+	\mathrm{Markov}(G) = \{I_\pr ( V, \mathrm {Parents} (V), \mathrm{ND} (V) \}_V
+\end{equation}
+where $\mathrm{ND}$ means non-descendants, and includes all nodes except for $V, \mathrm {Parents} (V)$ and $\mathrm {Descendants}(V)$ (all the way till leaf)
+
+\subsection{Graphoid Axioms\label{sec:graphoid}}
+\paragraph{Symmetry.}
+\begin{equation}
+	I_\pr (X, Z, Y) \iff I _\pr (Y, Z, X) 
+\end{equation}
+
+\paragraph{Decomposition.}
+\begin{equation}
+	I_\pr (X, Z, Y \cup W) \implies I _\pr (X, Z, Y) \land I _\pr (X, Z, W)
+\end{equation}
+
+\paragraph{Weak Union.}
+\begin{equation}
+	I_\pr (X, Z, Y \cup W) \implies I_\pr (X, Z \cup Y, W) 
+\end{equation}
+
+\paragraph{Contraction.}
+\begin{equation}
+	I_\pr (X, Z, Y) \land I_\pr (X, Z \cup Y, W ) \implies I_\pr (X, Z, Y \cup W )
+\end{equation}
+
+\paragraph{Triviality.}
+\begin{equation}
+	I_\pr (X, Z, \emptyset) 
+\end{equation}
+
+\subsection{Positive Graphoid Axioms}
+... includes everything from Graphoid Axioms (Section \ref{sec:graphoid}) and in addition has 
+\paragraph{Intersection.}
+\begin{equation}
+	I _ \pr (X, Z \cup W, Y ) \land I _\pr (X, Z \cup Y , W ) \implies I _\pr (X, Z, Y \cup W)
+\end{equation}
+
+\subsection{D-seperation Linear Prune Theorem}
+
+\subsection{D-seperation Properties}
+\paragraph{Soundness.} 
+\begin{equation}
+	\dsep_ G ( X, Z, Y ) \implies I _\pr (X, Z, Y)
+\end{equation}
+
+\paragraph{(Weak) Completeness.}
+There exists a parametrization $\Theta$ that for every DAG $G$ such that
+\begin{equation}
+	I_\pr (X, Z, Y) \iff \dsep_G (X, Z, Y)
+\end{equation}
+
+\section{Inference by Factor Elimination}
+\subsection{Elimination Trees}
+\paragraph{Variables.}
+$vars(i)$ denotes the variables mentioned at node $i$. $vars(i, j)$ denotes all variables mentioned in nodes to the $i$-side of the graph (inclusive). Hence, it holds that $vars(i) \subseteq vars(i, j)$.
+
+\paragraph{Separators.} 
+\begin{equation}
+	S_{ij} \triangleq vars(i, j) \cap vars(j, i)
+\end{equation}
+
+\paragraph{Clusters.} 
+\begin{equation}
+	C_i \triangleq vars(i) \cup \bigcup_j S_{ij}
+\end{equation}
+
+\section{Inference by Conditioning}
+\subsection{Run time}
+
+
+
+
+\section{Compiling Bayesian Networks}
+\subsection{Network Polynomials}
+The network polynomial is a summation over all instantiations of a network, 
+\begin{equation}
+	f \triangleq \sum_z \prod_{\theta_{x | u} \sim z }\theta _{x | u} \prod _{\lambda _x \sim z} \lambda_x
+\end{equation}
+
+\subsection{AC Properties}
+\paragraph{AC Size.}
+of an AC is defined as the number of edges in the circuit.  
+\paragraph{AC Complexity.}
+is the size of smallest AC that represents the network polynomial. 
+
+\paragraph{Decomposable.}
+At each $\star$ node, we need 
+\begin{equation}
+	vars(AC_A) \cap vars(AC_B) = \emptyset
+\end{equation}
+
+\paragraph{Deterministic.}
+At each $+$ node, we require at most one positive input is non-zero for all \textit{complete instantiation}. 
+
+\paragraph{Smooth.}
+At each $+$ node, we require 
+\begin{equation}
+	vars(AC_A) = vars(AC_B)
+\end{equation}
+
+\paragraph{AC for Marginals.} requires decomposable and smooth. This guarantees that sub-circuits are of complete variable instantiations. 
+
+\paragraph{AC for Marginals and MPE.} requires all three above: decomposable, deterministic, and smooth. The additional determinism guarantees a 1-to-1 mapping between sub-circuits and complete variable instantiations. 
+
+
+\subsection{AC Derivative Probabilistic Implications}
+\begin{equation}
+	\frac{\partial f}{\partial \lambda _\bx} (\be) = \pr( \bx, \be - X) 
+\end{equation}
+and 
+\begin{equation}
+	\theta_{\bx | \bu} \frac{\partial f}{\partial \theta_{\bx | \bu}} ( \be) = \pr (\bx, \bu, \be)
+\end{equation}
+
+
+
+
+
+
+
+
+
+
 
 
 
