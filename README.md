@@ -4,7 +4,7 @@
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
 <!-- [![HitCount](http://hits.dwyl.io/tingfengx/uoftnotes.svg)](http://hits.dwyl.io/tingfengx/uoftnotes) -->
 
-## &#x1F4DA; Notes for some of my courses at UC Los Angeles  
+## &#x1F4DA; Notes for some of my courses at University of California Los Angeles  
 ... a continuation to [tingfengx/uoftnotes](https://tingfengx.com/uoftnotes/)
   
 ### **Notes in progress:**  
