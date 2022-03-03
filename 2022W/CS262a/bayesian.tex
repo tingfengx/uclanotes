@@ -1,12 +1,10 @@
 \documentclass[11pt]{article}
+
 \usepackage{geometry}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
 \usepackage{amsmath}
 \usepackage{amssymb}
-\usepackage{amsfonts}
 \usepackage[
-    pdftex, 
+    xetex, 
     dvipsnames
 ]{xcolor}
 \usepackage[
@@ -32,6 +30,10 @@
     modifier={by-nc-sa}, 
     version={4.0},
 ]{doclicense}
+
+% ==== set font ====
+\usepackage{fontspec}
+\setmainfont{Palatino}
 
 % ==== todo notes ====
 \usepackage[
@@ -375,7 +377,6 @@ and
 \begin{equation}
 	\theta_{\bx | \bu} \frac{\partial f}{\partial \theta_{\bx | \bu}} ( \be) = \pr (\bx, \bu, \be)
 \end{equation}
-
 
 
 
