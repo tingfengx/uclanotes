@@ -32,8 +32,11 @@
 ]{doclicense}
 
 % ==== set font ====
-\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{unicode-math}
+%\setmainfont{texgyrepagella-regular.otf}
 \setmainfont{Palatino}
+\setmathfont{texgyrepagella-math.otf}
 
 % ==== todo notes ====
 \usepackage[
@@ -97,7 +100,7 @@
 \newcommand{\settag}[1]{\renewcommand{\theenumi}{#1}}
 \newcommand{\tbf}[1]{\textbf{#1}}
 \newcommand{\tit}[1]{\textit{#1}}
-\newcommand{\overbar}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\largeover}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
 \newcommand{\double}[1]{\mathbb{#1}} % Set to behave like that on word
 \newcommand{\trans}[3]{$#1:#2\rightarrow{}#3$}
 \newcommand{\map}[3]{\text{$\left[#1\right]_{#2}^{#3}$}}
@@ -138,7 +141,7 @@ This document is intentionally kept short, and is not a complete summary of what
 \section{Propositional Logic}
 \subsection{Principle Logical Forms}
 \paragraph{Inconsistent.} Something that never holds; $\mods (\cdot) = \empty$; $\pr(\alpha) = 0$
-\paragraph{Valid.} Somethng that always holds; $\mods (\cdot) = \Omega$; $\pr (\alpha) = 1$
+\paragraph{Valid.} Something that always holds; $\mods (\cdot) = \Omega$; $\pr (\alpha) = 1$
 \paragraph{Equivalent.} $\mods (\alpha) = \mods (\beta)$
 \paragraph{Mutual Exclusive.} $\mods(\alpha) \cap \mods (\beta) = \emptyset$
 \paragraph{Exhaustive.} $\mods (\alpha) \cup \mods (\beta) = \Omega$
@@ -148,7 +151,7 @@ This document is intentionally kept short, and is not a complete summary of what
 \begin{itemize}
 \item $\mods( \alpha \land \beta) = \mods( \alpha) \cap \mods(\beta)$
 \item $\mods( \alpha \vee \beta) = \mods ( \alpha) \cup \mods ( \beta)$
-\item $\mods ( \neg \alpha) = \overbar{\mods ( \alpha)}$
+\item $\mods ( \neg \alpha) = \largeover{\mods ( \alpha)}$
 \end{itemize}
 
 \subsection{Instantiation Agreement}
