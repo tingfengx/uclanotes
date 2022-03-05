@@ -349,13 +349,13 @@ Let $w$ be the width of the tree, $n$ denote the number of variables, and $|Q|$ 
 \end{equation}
 
 \subsubsection{Massage Passing}
-\paragraph{One Message.} The cost to pass one message is
+\paragraph{One Specific Message.} The cost to pass one specific message is
 \begin{equation}
 	\mathcal O (\exp ( |C_i|)) 
 \end{equation}
 where $|C_i|$ is the cluster size. 
 
-\paragraph{Every Message.} \todo{what is this again?}
+\paragraph{Every Message.} Since cluster sizes are bounded above by tree width, we can say that passing of every message will have an upper-bound runtime of
 \begin{equation}
 	\mathcal O ( \exp (w) )
 \end{equation}
