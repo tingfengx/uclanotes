@@ -19,6 +19,7 @@
 \usepackage{mdframed}
 \usepackage{caption}
 \usepackage{cancel}
+\usepackage{float}
 \usepackage[nottoc]{tocbibind}
 %\usepackage[
 %    outputdir=.texpadtmp
@@ -334,9 +335,61 @@ $vars(i)$ denotes the variables mentioned at node $i$. $vars(i, j)$ denotes all 
 \end{equation}
 
 \section{Inference by Conditioning}
-\subsection{Run time}
+\subsection{Run time Comparison}
+\subsubsection{Variable Elimination (VE)}
+Let $w$ be the width of the tree, $n$ denote the number of variables, and $|Q|$ as query variable size.
+\paragraph{Time Complexity.} $\mathcal O (n \exp (w))$
 
+\paragraph{Space Complexity.} 
+\begin{equation}
+	\mathcal O (n \exp (w) + n \exp (|Q|)) \equiv \mathcal O (n \exp (w)) \text{, \quad if } |Q| < \infty
+\end{equation}
 
+\subsubsection{Massage Passing}
+\paragraph{One Message.} The cost to pass one message is
+\begin{equation}
+	\mathcal O (\exp ( |C_i|)) 
+\end{equation}
+where $|C_i|$ is the cluster size. 
+
+\paragraph{Every Message.} \todo{what is this again?}
+\begin{equation}
+	\mathcal O ( \exp (w) )
+\end{equation}
+where $w$ is the width of the elimination tree. 
+
+\paragraph{Amount of Messages.} The total amount of messages is 
+\begin{equation}
+	\mathcal O (2 (m - 1)) \quad \quad \text{where $m = |V|$}
+\end{equation}
+since we have a tree structure, meaning we have exactly $(m - 1)$ edges and each edge can have forward backward each once. 
+
+\paragraph{All Messages - All Cluster Marginals.} The total time to pass all messages and compute all cluster marginals is 
+\begin{equation}
+	\mathcal O (m \exp (w)) \quad \quad \text{or} \quad \quad \mathcal O (n \exp( w))\text{, for $\mathcal O (n)$ edges.} 
+\end{equation}
+
+\subsubsection{Polytree / Belief Propagation}
+\paragraph{Runtime.} Define $k$ as the max number of parents in the poly tree, then $k$ is the same as the width of elimination tree. Let, also, $n$ denote the number of nodes in the polytree. The algorithm has runtime 
+\begin{equation}
+	\mathcal O (n \exp (k))
+\end{equation}
+
+\subsubsection{Cut Set Conditioning}
+\paragraph{Time and Space (Total) Complexity.}
+\begin{equation}
+	\mathcal O (n \exp (k))\quad \quad \text{where $n = |N|$ and $k$ is width}
+\end{equation}
+
+\subsubsection{Any Space Recursive Cut Set}
+\begin{table}[H]
+\centering
+\begin{tabular}{l|l|l|c} \label{tab:anytime comparison}
+      & no cache                           & all cache                 & $\Delta\, no \rightarrow all$ \\ \hline
+space & $\mathcal O (wn)$                  & $\mathcal O (n \exp (w))$ & $\uparrow$       \\
+time  & $\mathcal O (n \exp (w \log n )))$ & $\mathcal O (n \exp (w))$ & $\downarrow$    
+\end{tabular}
+\end{table}
 
 
 \section{Compiling Bayesian Networks}
