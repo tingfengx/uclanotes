@@ -427,7 +427,6 @@ At each $+$ node, we require
 
 \paragraph{AC for Marginals and MPE.} requires all three above: decomposable, deterministic, and smooth. The additional determinism guarantees a 1-to-1 mapping between sub-circuits and complete variable instantiations. 
 
-
 \subsection{AC Derivative Probabilistic Implications}
 \begin{equation}
 	\frac{\partial f}{\partial \lambda _\bx} (\be) = \pr( \bx, \be - X) 
@@ -437,8 +436,102 @@ and
 	\theta_{\bx | \bu} \frac{\partial f}{\partial \theta_{\bx | \bu}} ( \be) = \pr (\bx, \bu, \be)
 \end{equation}
 
+\subsection{Compilation via Variable Elimination}
+\paragraph{Circuit Factors.}
+``In a circuit factor, each variable instantiation is mapped to a circuit node instead of a number.''
+
+\paragraph{Operations.}
+We use $+(n_1, n_2)$ to denote an addition node that has $n_1$ and $n_2$ as its children. Similarly, $\star (n_1, n_2)$ denotes a multiplication node. An operation (multiplication or addition) of two circuit factors $f(X)$ and $f(Y)$ is a factor over variables $Z = X \cup Y$, 
+\begin{equation}
+	f(z) = [\star \text{ or } +]( f(x), f(y)), \quad \text{ where } x \sim z \quad \text{and} \quad y \sim z 
+\end{equation}
+
+\paragraph{Procedure.}
+\begin{enumerate}
+	\item \textbf{Made nodes for each CPT.} For each family $X|U$, construct nodes $\star (\lambda_x, \theta_{x | u} )$ for each instantiation $xu$ of $XU$. 
+	\item \textbf{Eliminate Everything.} We apply VE to eliminate all variables in the network to reach trivial instantiation $\top$ (corresponds to root). 
+\end{enumerate}
 
 
+\section{Causality - Interventions}
+\subsection{Notations}
+\paragraph{Causal Effect (CE).} of $X = x$ on $Y = y$ can be written as
+\begin{equation}
+	\pr (Y = y | do(X = x)) \equiv \pr (y | do (x)) \equiv \pr(y_x)
+\end{equation}
+
+\paragraph{Interventional Distribution.} For $\pr (X, Y, Z)$, the interventional distribution for $do(X = x)$ is denoted as 
+\begin{equation}
+	\pr _{X = x} (Y, Z)
+\end{equation}
+
+
+\subsection{Types of Causal Graphs}\footnote{Hidden variables are roots.}
+\subsubsection{Markovian Model}
+Each hidden variable in a Markovian Model has at most one child. It has an alternative name of ``no hidden confounders''. In this case, causal effects are always identifiable. 
+
+\subsubsection{Semi-Markovian Model}
+Some hidden variable has more than one child. In this case, causal effects are not always identifiable. 
+
+\subsection{Identifiability Criterion}
+\subsubsection{Causal Effect Rule}
+The Causal Effect Rule links together association and intervention. It states the following: if $\mathbf Z$ are the parents of $X$, then
+\begin{equation}
+	\pr (y | do(x)) = \pr(y_x) = \sum_{\mathbf z} \pr (y | x, \bz ) \pr (\bz)
+\end{equation}
+The catch to this formulation is one have to know the parents - meaning that we need to have a correct causal structure prior to using this formula. This is a strong assumption. Often, the structure is exactly what we are after.\footnote{
+Recall that different causal structures can generate the same distribution, and data alone is not enough.
+} 
+
+\subsubsection{Backdoor Criteria}
+A path between $X$ and $Y$ is \textit{\color{Thistle} blocked} by $Z$ iff 
+\begin{itemize}
+	\item some collider is not in $Z$, or
+	\item some non-collider is in $Z$. 
+\end{itemize}
+where a collider node is simply a convergent valve defined earlier ($\rightarrow W \leftarrow$). Here we distinguish only between colliders and non-colliders. The Backdoor Criteria states the following: Consider a causal graph $G$ and causal effect $\pr(y_x)$. A set of variables $\mathbf Z$ satisfis the backdoor criteria iff 
+\begin{itemize}
+	\item no node in $\mathbf Z$ is a descendant of $X$, 
+	\item $\mathbf Z$ \textit{\color{Thistle} blocks} every path between $X$ and $Y$ that contains an arrow into $X$. 
+\end{itemize}
+Then, if $\mathbf Z$ is a backdoor, then
+\begin{equation}
+	\pr ( y _ x) = \sum_{\bz} \pr (y | x, \bz) \pr (\bz)
+\end{equation}
+
+\paragraph{Incompleteness.} The backdoor criteria is incomplete. When it identifies that a causal effect has no backdoor, the causal effect can be either identifiable or not identifiable (inconclusive).  
+
+
+\subsubsection{Frontdoor Criteria}
+Consider a causal graph $G$ and causal effect $\pr(y_x)$. A set of variables $\mathbf Z$ satisfies the frontdoor criteria iff \dots. Then if $\mathbf Z$ is a frontdoor, then, 
+\begin{equation}
+	\pr ( y _ x ) = \sum _ \bz \pr (\bz | x ) \sum_{x'} \pr(y | x', \bz ) \pr(x')
+\end{equation}
+
+\subsection{The Do-Calculus}
+The key idea is to apply a series of rules until we get a formula that is comprised of solely associational quantities. There are three re-write rules in total. $\mathbf X, \mathbf Y, \mathbf Z, \mathbf W$ are disjoint sets of variables, 
+\paragraph{Rule 1. Ignoring Observations.}
+\begin{equation}
+	\pr (\by | do(\bx), \bz, \bw) = \pr (\by | do(\bx) , \bw) \quad \text{if} \quad \dsep_{G_{\overbar{\mathbf X}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
+\end{equation}
+where we perform $\dsep$ test on an altered graph $G_{\largeover{\mathbf x}}$, rather than the original causal graph $G$. (Detailed in Section \ref{sec:graph alteration}).
+
+\paragraph{Rule 2. Action / Observation Exchange.}
+\begin{equation}
+	\pr (\by | do(\bx), \do (\bz), \bw) = \pr (\by | do(\bx) ,\bz, \bw) \quad \text{if} \quad \dsep_{G_{\largeover {\mathbf X} \underbar{\mathbf Z}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
+\end{equation}
+
+\paragraph{Rule 3. Ignoring Actions.}
+\begin{equation}
+	\pr (\by | do(\bx), \do (\bz), \bw) = \pr (\by | do(\bx) , \bw) \quad \text{if} \quad \dsep_{G_{\largeover{\mathbf X} \largeover{Z(W)}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
+\end{equation}
+where encounter a special notation $\largeover{Z(W)}$ that means ``not all variables in $\mathbf Z$, but only those variables in $\mathbf Z$ that do not have ancestor in $\mathbf W$''. 
+
+\subsubsection{Graph Alterations}\label{sec:graph alteration} The calculus rules we specified earlier performs dsep tests on altered graphs, where
+\begin{itemize}
+	\item $G_{\largeover{\mathbf x}}$ is obtained via removing edges pointing into variables $\mathbf X$ from $G$.
+	\item $G_{\underbar{\mathbf x}}$ is obtained via removing edges pointing away from variables $\mathbf X$ from $G$.
+\end{itemize}
 
 
 
