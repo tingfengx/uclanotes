@@ -533,6 +533,106 @@ where encounter a special notation $\largeover{Z(W)}$ that means ``not all varia
 	\item $G_{\underbar{\mathbf x}}$ is obtained via removing edges pointing away from variables $\mathbf X$ from $G$.
 \end{itemize}
 
+\section{Counterfactual Reasoning}
+Causal effects are on the second level: interventions. In counterfactual reasoning, we step up onto level three: what-if's. 
+
+\subsection{The Information Hierarchy}
+To add to what we have said above, 
+\begin{itemize}
+	\item Associational reasoning: Bayesian Network
+	\item Interventional reasoning: Causal Bayesian network (causal graph)
+	\item Counterfactual reasoning: Functional Bayesian network (functional dependencies)
+\end{itemize}
+
+\subsection{Counterfactual Queries}
+\subsubsection{Probability of Necessity (PN)}
+Probability that $y$ would not have occurred in the absence of $x$ ($do(\overbar x)$), given that $x$ and $y$ did in fact occur, i.e, 
+\begin{equation}
+	PN = \pr (\overbar y_{\overbar x} | x, y) 
+\end{equation}
+
+\subsubsection{Probability of Sufficiency (PS)}
+Probability that setting $x$ would produce $y$ in a situation where both $x$ and $y$ are absent, i.e., 
+\begin{equation}
+	PS = \pr (y_x | \overbar y, \overbar x)
+\end{equation}
+
+\subsubsection{Probability of Necessity and Sufficiency (PNS)}
+Probability that $y$ responds to $x$ both ways (measures the necessity and sufficiency for $x$ to produce $y$): 
+\begin{equation}
+	PNS = \pr (y_x, \overbar y_{\overbar x} ) = \pr (x, y) PN + \pr (\overbar x, \overbar y) PS
+\end{equation}
+
+\subsubsection{Probability of Disablement} Probability that $y$ would have been prevented if it were not for $x$, 
+\begin{equation}
+	PD = \pr (\overbar y _ {\overbar x} | y )
+\end{equation}
+
+\subsubsection{Probability of Enablement} Probability that $y$ would have been realized if it were not for absence of $x$, 
+\begin{equation}
+	PE = \pr (y_x | \overbar y) 
+\end{equation}
+
+
+\subsection{Structural Causal Models (SCM)}
+
+\paragraph{World.} In SCM, a world is defined slightly different from what we had in associational graphs. A world is an instantiation of exogenous variables. This is because fixing exogenous variables fully specifies the entire network. 
+
+\subsection{Evenets}
+\subsubsection{Observational Event}
+\begin{itemize}
+	\item Form: $\bx$ where $\mathbf X$ is a set of endogenous variables
+	\item Meaning: variables $\mathbf X$ took the value $\bx$
+	\item Examples: $x$, \quad $\overbar y, z$
+\end{itemize}
+
+\subsubsection{Interventional Event}
+\begin{itemize}
+	\item Form: $\mathbf y _ \mathbf x$ where $\mathbf X$ and $\mathbf Y $ are sets of endogenous variables
+	\item Meaning: variables $\mathbf Y$ took the value $\by$ after setting $\mathbf X = \bx$
+	\item Examples: $y_x$, \quad $y_{\overbar x z}$, \quad $(x\overbar y)_{zw}$
+\end{itemize}
+
+\subsubsection{Counterfactual Event}
+\begin{itemize}
+	\item Form: $\eta_1, ..., \eta_n$ where $\eta_i$ is an observational or interventional event
+	\item Meaning: $\bigwedge_i \eta_ i$
+	\item Examples: mix of above two event examples
+\end{itemize}
+
+\subsection{Satisfaction}
+Recalling what we had earlier, we denote $\bu$ satisfies event $\eta$ in SCM $\mathcal M$ as 
+\begin{equation}
+	\mathbf u \vDash_{\mathcal M} \eta
+\end{equation}
+
+\subsubsection{Observational Event}
+We write 
+\begin{equation}
+	\bu \vDash_{\mathcal M} \mathbf x
+\end{equation}
+iff world $\bu$ fixes (endogenous) variables $\mathbf X$ to $\bx$ in SCM $\mathcal M$. 
+
+\subsubsection{Interventional Event}
+\begin{equation}
+	\bu \vDash_{\mathcal M} \by_\bx \iff \bu \vDash_{\mathcal M_\bx} \by
+\end{equation}
+
+\subsubsection{Counterfactual Event}
+\begin{equation}
+	\bu \vDash_{\mathcal M} \eta_1, ..., \eta_n \iff \bigwedge_i \by \vDash_{\mathcal M} \eta_i
+\end{equation}
+
+\subsection{Exogeneity and Monotonicity}
+\paragraph{Exogeneity.} $X$ is exogenous relative to $Y$ iff events $y_x$ and $x$ are independent and so are $y_{\overbar x}$ and $x$,
+\begin{equation}
+	\pr (y_x | x) = \pr (y_x) \quad \text{and} \quad \pr (y_{\overbar x}| x) = \pr ( y_{\overbar x}) 
+\end{equation}
+
+\paragraph{Monotonicity.} $Y$ is monotonic relative to $X$ iff the event $\overbar y _ x, y_{\overbar x}$ is unsatisfiable. This notion is general, $x$ and $y$ does not have to be inside the same family. A more general notation is to condition on probability of event $\overbar y _ x, y_{\overbar x}$ being zero. 
+
+
+
 
 
 
