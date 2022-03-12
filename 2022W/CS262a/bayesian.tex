@@ -536,7 +536,7 @@ Consider a causal graph $G$ and causal effect $\pr(y_x)$. A set of variables $\m
 	\pr ( y _ x ) = \sum _ \bz \pr (\bz | x ) \sum_{x'} \pr(y | x', \bz ) \pr(x')
 \end{equation}
 
-\subsubsection{Exogenous X}
+\subsubsection{Exogenous X\label{sec:exox}}
 For the query $\pr (y_x)$, when $X$ is an exogenous variable, meaning that it has no parents, 
 \begin{equation}
 	\pr(y _x) = \pr ( y | x)
@@ -554,6 +554,16 @@ where we perform $\dsep$ test on an altered graph $G_{\largeover{\mathbf x}}$, r
 \begin{equation}
 	\pr (\by | do(\bx), do (\bz), \bw) = \pr (\by | do(\bx) ,\bz, \bw) \quad \text{if} \quad \dsep_{G_{\largeover {\mathbf X} \underbar{\mathbf Z}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
 \end{equation}
+There are several weakened versions of this rule. First, we consider the case of $\mathbf X = \emptyset$, then
+\begin{equation}
+	\pr (\by | do (\bz), \bw) = \pr (\by | \bz, \bw) \quad \text{if} \quad \dsep_{G_{\underbar{\mathbf Z}}} (\mathbf Y, \mathbf {W}, \mathbf Z)
+\end{equation}
+Simplifying even further, we can remove the common ``kept'' part $\mathbf W$, and get
+\begin{equation}
+		\pr (\by | do (\bz)) = \pr (\by | \bz) \quad \text{if} \quad \dsep_{G_{\underbar{\mathbf Z}}} (\mathbf Y, \emptyset, \mathbf Z)
+\end{equation}
+notice that this Exogenous X rule (also stated in Section \ref{sec:exox}) follows directly as a corollary of Rule 2. 
+
 
 \paragraph{Rule 3. Ignoring Actions.}
 \begin{equation}
