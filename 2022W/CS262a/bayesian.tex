@@ -664,8 +664,23 @@ iff world $\bu$ fixes (endogenous) variables $\mathbf X$ to $\bx$ in SCM $\mathc
 
 \subsubsection{Counterfactual Event}
 \begin{equation}
-	\bu \vDash_{\mathcal M} \eta_1, ..., \eta_n \iff \bigwedge_i \by \vDash_{\mathcal M} \eta_i
+	\bu \vDash_{\mathcal M} \eta_1, ..., \eta_n \iff \bigwedge_i \bu \vDash_{\mathcal M} \eta_i
 \end{equation}
+
+\subsection{Queries}
+The computation of observational events $\eta$ in SCM is easy. First we compute the table with world probabilities. The table should have a row for each instantiation of the exogenous variables $\bu = [U_1, ..., U_n]$. Endogenous variables, e.g. $X, Y, Z$ will be computed using the factors, for example $f_X(...) = ...$. Then, to compute probability of observational event $\pr(\eta)$, we simply select rows that satisfies $\eta$ and add up their respective $\pr(\bu)$ values. To compute an interventional event $\eta$, we have to first transform the table. This is a two step process, 
+\begin{enumerate}
+	\item Force the endogenous variable(s) inside $do(\cdot)$ to take value of 1. For example if we want $y_x$, then we have $do(x)$ and thus we set all the values of $X$ in the table to 1. 
+	\item Now we need to fix the table by adjusting values $y$. We do so by simplifying the relationship, for example
+	\begin{equation}
+		f_Y(X, U_y, U_x) = xu_r + \overbar x u_y u_r + \overbar x \overbar u _y \overbar u_r
+	\end{equation}
+	simplifies to 
+	\begin{equation}
+		f_Y(X = x, U_x, U_r) = u_r
+	\end{equation}
+\end{enumerate}
+Then, the values of $y$ should be computed using this simplified formula (on the altered table). 
 
 \subsection{Exogeneity and Monotonicity}
 \paragraph{Exogeneity.} $X$ is exogenous relative to $Y$ iff events $y_x$ and $x$ are independent and so are $y_{\overbar x}$ and $x$,
