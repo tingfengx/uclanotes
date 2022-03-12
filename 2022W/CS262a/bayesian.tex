@@ -322,8 +322,28 @@ There exists a parametrization $\Theta$ that for every DAG $G$ such that
 	I_\pr (X, Z, Y) \iff \dsep_G (X, Z, Y)
 \end{equation}
 
+\section{Inference by Variable Elimination}
+\subsection{Interaction Graphs} \todo{add to here}
+
+
+\subsection{Elimination Order} Choosing an optimal elimination order in VE is NP-hard. We resort to heuristics. 
+
+\subsubsection{Minimum Degree Ordering}
+When choosing node to eliminate, choose the one that has the smallest number of neighbours in the interaction graph. 
+
+\subsubsection{Minimum Fill Ordering}
+
 \section{Inference by Factor Elimination}
-\subsection{Elimination Trees}
+\subsection{Factor Elimination}
+The elimination of factor $f_i$ from a set of factors $S$ is a two step process. We first eliminate all variables $V$ that appear only in factor $f_i$ and then multiply the result $\sum_V f_i$ by some other factor $f_j \in S$. 
+
+\paragraph{Projection.} Factor projection operation is defined as 
+\begin{equation}
+	\mathrm {project} (f, Q) \triangleq \sum_{vars(f) \setminus Q} f
+\end{equation}
+which is essentially summing out all variables not in $Q$. In the vanilla factor elimination algorithm (\texttt{FE1}), the projection is used in the return statement. This is essentially a normalization step (onto variables specified only).
+
+\subsection{Elimination Trees\label{sec:elimination tree}}
 \paragraph{Variables.}
 $vars(i)$ denotes the variables mentioned at node $i$. $vars(i, j)$ denotes all variables mentioned in nodes to the $i$-side of the graph (inclusive). Hence, it holds that $vars(i) \subseteq vars(i, j)$.
 
@@ -336,6 +356,14 @@ $vars(i)$ denotes the variables mentioned at node $i$. $vars(i, j)$ denotes all 
 \begin{equation}
 	C_i \triangleq vars(i) \cup \bigcup_j S_{ij}
 \end{equation}
+
+\subsection{Message Passing Formulation}
+The Message that $i$ sends to $j$ is 
+\begin{equation}
+	M_{ij} \triangleq \mathrm{project} \left( \phi_i \prod_{k \neq j } M_{ki}, S_{ij} \right) 
+\end{equation}
+where the product is off all the messages from edges except for the output direction and $S_{ij}$ is the separator defined in Section \ref{sec:elimination tree}.
+
 
 \section{Inference by Conditioning}
 \subsection{Run time Comparison}
@@ -508,6 +536,12 @@ Consider a causal graph $G$ and causal effect $\pr(y_x)$. A set of variables $\m
 	\pr ( y _ x ) = \sum _ \bz \pr (\bz | x ) \sum_{x'} \pr(y | x', \bz ) \pr(x')
 \end{equation}
 
+\subsubsection{Exogenous X}
+For the query $\pr (y_x)$, when $X$ is an exogenous variable, meaning that it has no parents, 
+\begin{equation}
+	\pr(y _x) = \pr ( y | x)
+\end{equation}
+
 \subsection{The Do-Calculus}
 The key idea is to apply a series of rules until we get a formula that is comprised of solely associational quantities. There are three re-write rules in total. $\mathbf X, \mathbf Y, \mathbf Z, \mathbf W$ are disjoint sets of variables, 
 \paragraph{Rule 1. Ignoring Observations.}
@@ -518,12 +552,12 @@ where we perform $\dsep$ test on an altered graph $G_{\largeover{\mathbf x}}$, r
 
 \paragraph{Rule 2. Action / Observation Exchange.}
 \begin{equation}
-	\pr (\by | do(\bx), \do (\bz), \bw) = \pr (\by | do(\bx) ,\bz, \bw) \quad \text{if} \quad \dsep_{G_{\largeover {\mathbf X} \underbar{\mathbf Z}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
+	\pr (\by | do(\bx), do (\bz), \bw) = \pr (\by | do(\bx) ,\bz, \bw) \quad \text{if} \quad \dsep_{G_{\largeover {\mathbf X} \underbar{\mathbf Z}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
 \end{equation}
 
 \paragraph{Rule 3. Ignoring Actions.}
 \begin{equation}
-	\pr (\by | do(\bx), \do (\bz), \bw) = \pr (\by | do(\bx) , \bw) \quad \text{if} \quad \dsep_{G_{\largeover{\mathbf X} \largeover{Z(W)}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
+	\pr (\by | do(\bx), do (\bz), \bw) = \pr (\by | do(\bx) , \bw) \quad \text{if} \quad \dsep_{G_{\largeover{\mathbf X} \largeover{Z(W)}}} (\mathbf Y, \mathbf {XW}, \mathbf Z)
 \end{equation}
 where encounter a special notation $\largeover{Z(W)}$ that means ``not all variables in $\mathbf Z$, but only those variables in $\mathbf Z$ that do not have ancestor in $\mathbf W$''. 
 
