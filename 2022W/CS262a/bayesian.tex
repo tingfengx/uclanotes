@@ -569,6 +569,121 @@ and
 \paragraph{Difference.} The key difference is that in \textbf{EME2} does not reference the expected empirical distribution (there is no $D$ in the subscript of $\pr$; while \textbf{EME1} does reference. Instead, \textbf{EME2} computes EM estimates by performing inference on a bayesian network parameterized by the previous parameter estimates $\theta^k$.  
 
 \subsection{Graph Structure Learning}
+The criteria scores, LL, MDL, AIC etc\todo{add}
+
+\section{Bayesian Learning}
+\subsection{Meta Network}
+The meta network is a tiled version of a base bayesian network, with extra (root) variables pointing into base network nodes. Meta network of size $N$ means it has $N$ copies of the original network within. It satisfies the following \textbf{parameter independence} relationships: let $\Sigma_1, \Sigma_2$ each contain a collection of parameter sets, and $\Sigma_1 \cap \Sigma_2 = \emptyset$. Then, 
+\begin{itemize}
+	\item $\Sigma_1$ and $\Sigma_2$ are independent, $\mathbb P (\Sigma_1, \Sigma_2) = \mathbb P (\Sigma_1 ) \mathbb P (\Sigma_2) $, and
+	\item $\Sigma_1$ and $\Sigma_2$ are independent given any \textit{complete} dataset $D$, 
+	\begin{equation}
+		\mathbb P (\Sigma_1, \Sigma_2 | D) = \mathbb P (\Sigma_1 |D) \mathbb P (\Sigma_2 |D) 
+	\end{equation}
+\end{itemize}
+
+\subsection{Parameter Learning - Discrete Param Sets, Complete Data}
+\paragraph{Theorem 18.2.} Given discrete parameter sets and a dataset $D$ of size $N$, we have
+\begin{equation}
+	\mathbb P (\alpha _{N + 1} | D) = \sum_\theta \pr_\theta (\alpha) \mathbb P (\theta | D)
+\end{equation}
+where $\alpha_{N + 1}$ is obtained from $\alpha$ by replacing every occurrence of variable $X$ by its instance $X_{N+1}$. Notice that here we are saying $\mathbb P (\alpha _{N + 1} | D) $ is an expectation over $\pr_\theta (\alpha) $.
+
+\paragraph{Bayesian Parameter Estimates.} Let $\theta_{X|\bu}$ b a discrete parameter set. The Bayesian estinate for parameter $\theta_{x | \bu}$ given data set $D$ is defined as 
+\begin{equation}
+	\theta_{x|\bu}^{be} \triangleq \sum_{\theta_{X| \bu}} \theta_{x | \bu} \cdot \mathbb P ( \theta_{X | \bu} | D)
+\end{equation}
+where (Theorem 18.4)
+\begin{equation}
+	\mathbb P( \theta_{X | \bu} | D) = \eta \mathbb P (\theta _{X | \bu}) \prod_x \left[ \theta_{x | \bu} \right] ^{D\# (x \bu)}
+\end{equation}
+when $\eta$ is a normalizing constant. 
+
+\paragraph{Theorem 18.3.}
+\begin{equation}
+	\mathbb P (\alpha_{N + 1} | D ) = \pr_{\theta^{be}} (\alpha)
+\end{equation}
+This is saying that $\mathbb P (\alpha _{N + 1} | D)$ (Theorem 18.2) can be computed as an inference over the network. 
+
+\subsection{Parameter Learning - Continuous Param Sets, Complete Data}
+\subsubsection{Dirichlet Prior}
+\paragraph{Dirichlet Prior Exponents.}
+If our network parameters are binary, then the Dirichlet prior requires to exponents, 
+\begin{equation}
+	\mathbb E [ \theta_h ] = \frac{\psi_h}{\psi_h + \psi_{\overbar h}} \quad \quad 
+	\mathbb E [ \theta_{\overbar h} ] = \frac{\psi_{\overbar h}}{\psi_h + \psi_{\overbar h}}
+\end{equation}
+This notion generalizes similarly for variables that can take on more values. 
+
+\paragraph{Dirichlet Distribution.} Formally, a Dirichlet prior distribution is specified by a set of exponents $\psi_{x | \bu} \geq 1$. The constraint of the value of exponents guarantees a uni-modal Dirichlet. The \textbf{equivalent sample size} of the distribution is defined as 
+\begin{equation}
+	\psi_{X | \bu}  = \triangleq \sum_ x \phi_{x | \bu}
+\end{equation}
+The distribution takes the following density
+\begin{equation}
+	\rho ( \theta _ { X | \bu } ) \triangleq \frac{\Gamma (\psi _ {X | \bu} )}{\prod _ x \Gamma (\psi _ {x | \bu}) } \cdot  \prod_x \left[ \theta _ {x | \bu} \right] ^{\psi_{x | \bu} - 1}
+\end{equation}
+
+\paragraph{Dirichlet Statistics.}
+If a network parameter has a prior specified in Dirichlet, then it has expectation
+\begin{equation}
+	\mathbb E ( \theta _{x | \bu} ) = \frac{\psi _ {x | \bu}}{\psi _ {X | \bu}}
+\end{equation}
+and variance 
+\begin{equation}
+	\mathbb V (\theta _{x | \bu} ) = \frac{\mathbb E ( \theta _{x | \bu} ) ( 1- \mathbb E ( \theta _{x | \bu} ))}{\psi_{X | \bu } + 1}
+\end{equation}
+where we notice as the equivalent sample size ($\psi_{X | \bu }$) increase, the variance decreases. The mode is 
+\begin{equation}
+	\mathbb M ( \theta _{x | \bu} ) = \frac{\psi_{x | \bu} - 1}{\psi _{X | \bu} - |X|}
+\end{equation}
+where $|X|$ is the number of values for variable $X$. 
+
+\subsubsection{The Learning - Theory}
+\paragraph{Theorem 18.7.} 
+\begin{equation}
+	\mathbb P (\alpha _{N + 1} | D ) = \int \pr_\theta ( \alpha ) \rho ( \theta | D) d \theta
+\end{equation}
+
+\paragraph{Bayesian Estimates.} Let $\theta _{X | \bu}$ be a continuous parameter set. The bayesian estimate for network parameter $\theta_{x | \bu}$ given data set $D$ is defined as 
+\begin{equation}
+	\theta_{x | \bu }^{be} \triangleq \int \theta_{x | \bu} \cdot \rho ( \theta _{X | \bu} | D) d \theta_{X | \bu}
+\end{equation}
+
+\paragraph{Theorem 18.8.} 
+\begin{equation}
+	\mathbb P ( \alpha_{N + 1} | D) = \pr_{\theta^{be}} (\alpha)
+\end{equation}
+
+\subsubsection{The Learning - Practice}
+\paragraph{Theorem 18.9.} 
+Consider a meta network where each parameter set $\theta_{X| \bu}$ has a prior Dirichlet density $\rho ( \theta _ {X | \bu} )$ specified by exponents $\psi_{x | \bu} $. Let $D$ be a complete dataset. Then the posterior density $\rho ( \theta _{X| \bu} | D)$ is also Dirichlet, with exponents
+\begin{equation}
+	\psi ' _{x | \bu} = \psi _{x|\bu} + D \# (x \bu)
+\end{equation}
+
+\paragraph{Posterior Bayesian Estimates.} The posterior expectation of parameter $\theta_{x | \bu}$ given complete data is given by
+\begin{equation}
+	\theta^{be}_{x | \bu} = \frac{\psi_{x |\bu} + D\# (x \bu)}{\psi_{X | \bu} + D \# (\bu) }
+\end{equation}
+where $\psi_{x |\bu}$ are the exponents in the prior Dirichlet distribution, and $psi_{X |\bu}$ is its equivalent sample size. 
+
+\paragraph{Maximum-A-Posteriori Estimates.} The MAP estimate given complete data is 
+\begin{equation}
+	\theta_{x | \bu}^{ma} = \frac{\psi_{x |\bu} + D\# (x \bu) - 1}{\psi_{X | \bu} + D \# (\bu) - |X|}
+\end{equation}
+where $|X|$ is the number of values for variable $X$.
+
+\subsubsection{Non-informative Prior} 
+Non-informative prior refers to the case (in Dirichlet) where all exponents are equal to one: $\psi_{x | \bu} = 1$. Thus the expectation is $1/|X|$ for all classes. Under this prior, 
+\begin{equation}
+	\theta^{be}_{x|\bu} = \frac{1 + D\#(x \bu)}{|X| + D \# (\bu)}
+\end{equation}
+and 
+\begin{equation}
+	\theta_{x|\bu}^{ma} = \frac{D\#(x \bu)}{D\#(\bu)}
+\end{equation}
+which coincides with the MLE. However, \textit{this only works when the prior exponents are all equal to one.}
 
 
 \section{Causality - Interventions}
@@ -780,6 +895,80 @@ Then, the values of $y$ should be computed using this simplified formula (on the
 
 \paragraph{Monotonicity.} $Y$ is monotonic relative to $X$ iff the event $\overbar y _ x, y_{\overbar x}$ is unsatisfiable. This notion is general, $x$ and $y$ does not have to be inside the same family. A more general notation is to condition on probability of event $\overbar y _ x, y_{\overbar x}$ being zero. 
 
+\section{Sensitivity Analysis}
+\subsection{Global to Local Belief Change}
+For each network parameter $\theta_{x | \bu}$, what is the minimal amount of change that can enforce query constraints such as 
+\begin{equation}
+	\pr (y | e) \geq \varepsilon \quad 
+	\pr (y | e) - \pr(z | e ) \geq \varepsilon \quad 
+	\pr (y | e) / \pr( z | e) \geq  \varepsilon
+\end{equation}
+To do so, we need to first calculate partial derivatives where we define $\tau$'s such that 
+\begin{equation}
+	\theta_{x|\bu} = \tau_{x | \bu} \quad \quad 
+	\theta_{\overbar x |\bu} = 1 - \tau_{x | \bu}
+\end{equation}
+Then, 
+\begin{equation}
+	\alpha_e = \frac{\partial \pr(e)}{\partial \tau_{x | u}} = \frac{\pr(e, x, u)}{\theta_{x | u}} - \frac{\pr( e, \overbar x, u)}{\theta_{\overbar x | u}}
+\end{equation}
+
+This results in the following formulation. To ensure constraint $\pr'(y | e) \geq \varepsilon$, we need to change the meta parameter $\tau_{x |u}$ by $\delta$ such that 
+\begin{equation}
+	\pr(y, e) - \varepsilon\pr(e) \geq \delta[- \alpha _{y, e} + \varepsilon \alpha _e]
+\end{equation}
+where $\delta$ is the only unknown and shall result in $\delta \geq q$ or $\delta \leq q$. 
+
+\paragraph{Complexity.} You get this for free. Running inference yields us derivatives and from there we can solve $q$. Hence time complexity is $\mathcal O (n 2^w)$. $n$ is the number of variables and $w$ is the tree width. 
+
+\subsection{Local to Global Belief Change}
+Given a change on a parameter, what bounds can we provide on the changes on queries? 
+
+\paragraph{Bounding the Partial Derivative} The bound is in terms of the current value of query $ \pr(\by | \be)$ and the parameter value $ \pr(x| \bu)$
+\begin{equation}
+	\left| \frac{\partial \pi(\by | \be)}{\partial \tau_{x |\bu}} \right| \leq 
+	\frac{\pr(\by | \be) (1 - \pr(\by | \be))}{\pr(x | \bu) (1 - \pr(x | \bu))}
+\end{equation}
+Extreme queries tend to be robust when changing non-extreme parameters, yet non-extreme queries may change considerably when changing extreme parameters. \footnote{A query that is close to 0 or 1 tends to stick, and a query with value around 1/2 tend to oscillate more. The other way around for parameters. Tinkering parameter that is around 1/2 does not incur big changes, but changing extreme parameters will result in rapid changes.}
+
+\paragraph{Arbitrary Parameter Changes}
+First, we recall definition of Odds, 
+\begin{equation}
+	O(x | \bu) = \pr(x |\bu) / (1 - \pr( x | \bu))
+\end{equation}
+and \begin{equation}
+	O(\by | \be) = \pr( \by | \be) / (1 - \pr( \by | \be))
+\end{equation}
+and $O'(x | \bu), O'(\by| \be)$ denotes the odds after having applied an arbitrary change to the meta parameter $\tau_{x |\bu}$. The bounds can be specified as 
+\begin{equation}
+	\left| \ln (O'(\by | \be)) - \ln (O (\by |\be) )\right| \leq \left|\ln (O'( x |\bu)) - \ln ( O(x | \bu))\right| 
+\end{equation}
+
+\subsection{Chan-Darwiche Measure}
+\begin{equation}
+	D_{CD}(\pr, \pr') \triangleq
+	\ln\max_w \frac{\pr'(w)}{\pr(w)} - \ln\min_w \frac{\pr'(w)}{\pr(w) }
+\end{equation}
+which is a true distance metric.\footnote{Original paper: \url{https://www.aaai.org/Papers/AAAI/2002/AAAI02-081.pdf}} Then, we can provide the bound as follows. Let $\pr, \pr'$ be two distributions, $\alpha, \beta$ be any two events, 
+\begin{align}
+	e^{-D(\pr, \pr')} \leq  \frac{O'(\alpha | \beta)}{O(\alpha | \beta)} \leq e^{D(\pr, \pr')}
+\end{align}
+
+As an alternative formulation, given $\pr, \pr'$ and define $p = \pr(\alpha | \beta), d = D_{CD}(\pr, \pr')$, the bounds are 
+\begin{equation}
+	\frac{pe^{-d}}{pe^{-d} - p + 1} \leq \pr'(\alpha | \beta) \leq \frac{pe^d}{pe^d - p + 1}
+\end{equation} 
+
+\paragraph{Distance Between Networks.} Consider the following case
+\begin{itemize}
+	\item Bayesian network $N'$ is obtained from $N$ by changing the CPT of $X$ from $\Theta_{X | u}$ to $\Theta'_{X | u}$. 
+	\item $N$ and $N'$ induce distributions $\pr$ and $\pr'$. 
+\end{itemize}
+Then, the $D_{CD}$ between the two networks is the same as the distance between the two changed CPTs, i.e. 
+\begin{equation}
+	D_{CD} (\pr, \pr') = D_{CD} (\Theta_{X | u}, \Theta'_{X | u})
+\end{equation}
+This works because the changed CPT is indeed itself a distribution. 
 
 
 
@@ -791,4 +980,15 @@ Then, the values of $y$ should be computed using this simplified formula (on the
 
 
 
+
+
+
+
+
+
+
+
+\begin{equation*}
+	\heartsuit
+\end{equation*}
 \end{document}
