@@ -347,11 +347,16 @@ The interaction graph is a living creature, meaning that it is continuously upda
 
 \subsection{Elimination Order\label{sec:elimination order}} Choosing an optimal elimination order in VE is NP-hard. We resort to heuristics. 
 
-\subsubsection{Minimum Degree Ordering}
+\paragraph{Minimum Degree Ordering.}
 When choosing node to eliminate, choose the one that has the smallest number of neighbours in the interaction graph. 
 
-\subsubsection{Minimum Fill Ordering}
+\paragraph{Minimum Fill Ordering.}
 ..., choose the one that results in minimum number of newly added edge in the interaction graph. 
+
+\subsection{Tree Width}
+Tree width is the smallest possible elimination order width for a network. The tree width quantifies the the extent to which a network resembles a tree structure. The more similar a network is to a tree structure, the smaller the tree width. No complete elimination order can have have an order width less than network tree width. Also, there always exists an elimination order that has order width the same as tree width. However, determining this order is NP-hard. 
+
+\paragraph{Poly-Tree Tree Width.} Poly trees have known tree width of $k$ where $k$ is the maximum number of parents that any node may have. 
 
 \section{Inference by Factor Elimination}
 \subsection{Factor Elimination}
@@ -499,6 +504,71 @@ We use $+(n_1, n_2)$ to denote an addition node that has $n_1$ and $n_2$ as its 
 	\item \textbf{Made nodes for each CPT.} For each family $X|U$, construct nodes $\star (\lambda_x, \theta_{x | u} )$ for each instantiation $xu$ of $XU$. 
 	\item \textbf{Eliminate Everything.} We apply VE to eliminate all variables in the network to reach trivial instantiation $\top$ (corresponds to root). 
 \end{enumerate}
+
+\section{Maximum Likelihood Learning}
+\subsection{Empirical Distribution}
+A dataset $D$ for variables $\mathbf X$ is a vector $\bd_1, ..., \bd_N$ where each $\bd_i$ is called a case and represents a partial instantiation of variables $\mathbf X$. The data set is called complete if each case is a complete instantiation of variables $\mathbf X$; otherwise the dataset is called incomplete. The empirical distribution in the case of complete dataset is defined as
+\begin{equation}
+	\pr_D (\alpha ) \triangleq \frac{D\#(\alpha)}{N}
+\end{equation}
+where $D\#(\alpha)$ is the number of cases $\mathbf d_i$ in the data set $D$ that satisfy event $\alpha$, i.e.  $\bd_i \vDash \alpha$. 
+
+\subsection{Complete Data MLE\label{sec:compete data mle}}
+When the dataset is complete, the definition of empirical distribution above suggests the following \textbf{maximum likelihood estimates}
+\begin{equation}
+	\theta^{ml}_x \triangleq \pr_D(x) = \frac{D\#(x)}{N} 
+\end{equation}
+\begin{equation}
+	\theta^{ml}_{x|\bu} \triangleq \pr_D (x | \bu) = \frac{D\# (x, \bu)}{D\# (\bu)}
+\end{equation}
+This formulation maximizes the likelihood, i.e., 
+\begin{equation}
+	\theta^{ml} = \arg\max _\theta L(\theta |D ) = \arg\max _\theta \prod_{i = 1}^N \pr_\theta (\bd_i)
+\end{equation}
+In addition, maximum likelihood estimates minimizes the KL divergence between the learnt bayesian network and the empirical distribution, i.e., 
+\begin{equation}
+	\arg\max_\theta L(\theta| D) = \arg\min_\theta D_{KL} (\pr_D (\mathbf X), \pr_\theta (\mathbf X))
+\end{equation}
+
+\paragraph{Distribution of Estimates.} The distribution of ML estimates $\theta_{x|\bu}^{ml}$ is asymptotically normal, converges in distribution to 
+\begin{equation}
+	\mathrm{Gaussian} \left ( 
+	\mu = \pr(x | \bu ), \sigma = \frac{\pr(x | \bu) (1 - \pr(x | \bu)) }{N \cdot \pr(\bu) }
+	\right) 
+\end{equation}
+Notice that as sample size $N$ increases, the variance of this distribution decreases. 
+
+\subsection{Incomplete Data EM}
+EM algorithm first completes the dataset, which induces an empirical distribution, and then uses it to estimate parameters the same way we did in Section \ref{sec:compete data mle}. The new set of parameters are guaranteed to have no less likelihood than the initial parameters, so this process is repeated until convergence criteria is met. 
+
+\paragraph{Expected Empirical Distribution 1.} The expected empirical distribution of dataset $D$ under parameters $\theta^k$ is defined as 
+\begin{equation}
+	\pr_{D, \theta^k} (\alpha) \triangleq \sum_{\bd_i, \bc_i \vDash \alpha} \pr_{\theta^k}(\bc_i, \bd_i)
+\end{equation}
+where $\alpha$ is an event and $\mathbf C_i$ are the variables with missing values in case $\bd_i$. 
+
+\paragraph{EM Estimates 1.}  The EM estimates for dataset $D$ and parameters $\theta^k$ are defined as 
+\begin{equation}
+	\theta_{x|\mathbf u}^{k + 1} \triangleq \pr_{D, \theta^k} (x|\bu)
+\end{equation}
+
+\paragraph{Expected Empirical Distribution 2.} The expected empirical distribution of data set $D$ given parameters $\theta^k$ can be computed as 
+\begin{equation}
+	\pr_{D, \theta^k} (\alpha) = \frac{1}{N} \sum_{i = 1}^N \pr_{\theta^k}  (\alpha | \bd_i)
+\end{equation}
+
+\paragraph{EM Estimates 2.} Now the EM estimates for dataset $D$ and parameters $\theta^k$ can be computed as\footnote{This is to say that the EM estimates can be computed without constructing the expected empirical distribution.}
+\begin{equation}
+	\theta_{x} ^{k + 1} = Pr_{D, \theta^k} (x) = (1/N) \sum_{i = 1}^N Pr_{\theta^k} (x | \bd_i)
+\end{equation}
+and
+\begin{equation}
+	\theta_{x|\bu}^{k + 1} = \frac{\sum_{i= 1}^N \pr_{\theta^k} (x\bu | \bd_i)}{\sum_{i = 1}^N \pr_{\theta^k} (\bu | \bd_i)}
+\end{equation}
+
+\paragraph{Difference.} The key difference is that in \textbf{EME2} does not reference the expected empirical distribution (there is no $D$ in the subscript of $\pr$; while \textbf{EME1} does reference. Instead, \textbf{EME2} computes EM estimates by performing inference on a bayesian network parameterized by the previous parameter estimates $\theta^k$.  
+
+\subsection{Graph Structure Learning}
 
 
 \section{Causality - Interventions}
