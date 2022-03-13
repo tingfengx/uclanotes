@@ -19,6 +19,7 @@
 \usepackage{mdframed}
 \usepackage{caption}
 \usepackage{cancel}
+\usepackage{parskip}
 \usepackage{float}
 \usepackage[nottoc]{tocbibind}
 %\usepackage[
@@ -308,7 +309,21 @@ where $\mathrm{ND}$ means non-descendants, and includes all nodes except for $V,
 	I _ \pr (X, Z \cup W, Y ) \land I _\pr (X, Z \cup Y , W ) \implies I _\pr (X, Z, Y \cup W)
 \end{equation}
 
+\subsection{D-seperation and Graphical Rules}
+There are three types of valves to consider, 
+\begin{itemize}
+	\item A sequential valve ($\rightarrow W \rightarrow$) is closed iff variable $W$ appears in $\mathbf Z$, 
+	\item A divergent valve ($\leftarrow W \rightarrow$) is closed iff variable $W$ appears in $\mathbf Z$, and 
+	\item A convergent valve ($\rightarrow W \leftarrow$) is closed iff neither variable $W$ not any of its descendants appears in $\mathbf Z$. \footnote{This will be referred to as a collider node later, as it is one that behaves differently from the rest two.}
+\end{itemize}
+
 \subsection{D-seperation Linear Prune Theorem}
+(Theorem 4.1) Testing whether $\mathbf X$ and $\mathbf Y$ are d-separated by $\mathbf Y$ in a DAG $G$ is equivalent to testing whether $\mathbf X$ and $\mathbf Y$ are disconnected\footnote{Disregard arrows, we only care about connectedness here.} in a new DAG $G'$, which is obtained by pruning DAG as follows: 
+\begin{itemize}
+	\item We delete any leaf node $W$ from DAG $G$ as long as $W\not \in \mathbf X\cup \mathbf Y \cup \mathbf Z$. This process is repeated until no more nodes can be deleted. 
+	\item We delete all edges outgoing from nodes in $\mathbf Z$, the evidence set. 
+\end{itemize}
+
 
 \subsection{D-seperation Properties}
 \paragraph{Soundness.} 
@@ -323,15 +338,20 @@ There exists a parametrization $\Theta$ that for every DAG $G$ such that
 \end{equation}
 
 \section{Inference by Variable Elimination}
-\subsection{Interaction Graphs} \todo{add to here}
+\subsection{Interaction Graphs}
+The interaction graph is a tool to help us determine the run time complexity of variable elimination. Also it can help us choose elimination order. (Heuristics described in Section \ref{sec:elimination order}. It is defined as follows: Let $f_1, ..., f_n$ be a set of factors. The interaction graph $G$ of these factors is an undirected graph constructed as follows. The nodes of $G$ are the variables that appear in factors $f_1, ..., f_n$. There is an edge between two variables in $G$ iff those variables appear in he same factor. 
 
+The interaction graph is a living creature, meaning that it is continuously updated as we perform variable elimination. When we eliminate a node $n$, we have to add edges (if necessary) to make sure all neighbors of $n$ are fully connected. 
 
-\subsection{Elimination Order} Choosing an optimal elimination order in VE is NP-hard. We resort to heuristics. 
+\paragraph{Order Width.} The order width can be determined by keeping track of the evolving interaction graphs. Order width is defined as the maximum number of neighbors when nodes is deleted from the interaction graph. Of course, we have to add edges (if necessary) after every deletion.
+
+\subsection{Elimination Order\label{sec:elimination order}} Choosing an optimal elimination order in VE is NP-hard. We resort to heuristics. 
 
 \subsubsection{Minimum Degree Ordering}
 When choosing node to eliminate, choose the one that has the smallest number of neighbours in the interaction graph. 
 
 \subsubsection{Minimum Fill Ordering}
+..., choose the one that results in minimum number of newly added edge in the interaction graph. 
 
 \section{Inference by Factor Elimination}
 \subsection{Factor Elimination}
@@ -457,9 +477,9 @@ At each $+$ node, we require
 
 \subsection{AC Derivative Probabilistic Implications}
 \begin{equation}
-	\frac{\partial f}{\partial \lambda _\bx} (\be) = \pr( \bx, \be - X) 
+	\frac{\partial f}{\partial \lambda _\bx} (\be) = \pr( \bx, \be - \mathbf X) 
 \end{equation}
-and 
+where the notation $\be - \mathbf X$ means the instantiation that results form erasing the values of variables $\mathbf X$ from instantiation $\be$\footnote{For example, $\mathbf e = ab \overbar c$, then $\be - A = b\overbar c$ and $\be - AC = b$}, and 
 \begin{equation}
 	\theta_{\bx | \bu} \frac{\partial f}{\partial \theta_{\bx | \bu}} ( \be) = \pr (\bx, \bu, \be)
 \end{equation}
@@ -670,7 +690,7 @@ iff world $\bu$ fixes (endogenous) variables $\mathbf X$ to $\bx$ in SCM $\mathc
 \subsection{Queries}
 The computation of observational events $\eta$ in SCM is easy. First we compute the table with world probabilities. The table should have a row for each instantiation of the exogenous variables $\bu = [U_1, ..., U_n]$. Endogenous variables, e.g. $X, Y, Z$ will be computed using the factors, for example $f_X(...) = ...$. Then, to compute probability of observational event $\pr(\eta)$, we simply select rows that satisfies $\eta$ and add up their respective $\pr(\bu)$ values. To compute an interventional event $\eta$, we have to first transform the table. This is a two step process, 
 \begin{enumerate}
-	\item Force the endogenous variable(s) inside $do(\cdot)$ to take value of 1. For example if we want $y_x$, then we have $do(x)$ and thus we set all the values of $X$ in the table to 1. 
+	\item Force the endogenous variable(s) inside $do(\cdot)$ to take value of 1. For example if we want $y_x$, then we have $do(x)$ and thus we set all the values of $X$ in the table to $x$.\footnote{In binary case, this means 1 if we have $do(x)$ and 0 if we have $do(\overbar x)$} 
 	\item Now we need to fix the table by adjusting values $y$. We do so by simplifying the relationship, for example
 	\begin{equation}
 		f_Y(X, U_y, U_x) = xu_r + \overbar x u_y u_r + \overbar x \overbar u _y \overbar u_r
@@ -680,7 +700,7 @@ The computation of observational events $\eta$ in SCM is easy. First we compute 
 		f_Y(X = x, U_x, U_r) = u_r
 	\end{equation}
 \end{enumerate}
-Then, the values of $y$ should be computed using this simplified formula (on the altered table). 
+Then, the values of $y$ should be computed using this simplified formula (on the altered table). In the new table, this interventional probability can be calculated as if it is an associational query, i.e. we pick rows that satisfies and add up probabilities. 
 
 \subsection{Exogeneity and Monotonicity}
 \paragraph{Exogeneity.} $X$ is exogenous relative to $Y$ iff events $y_x$ and $x$ are independent and so are $y_{\overbar x}$ and $x$,
