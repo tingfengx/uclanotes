@@ -364,7 +364,7 @@ The elimination of factor $f_i$ from a set of factors $S$ is a two step process.
 
 \paragraph{Projection.} Factor projection operation is defined as 
 \begin{equation}
-	\mathrm {project} (f, Q) \triangleq \sum_{vars(f) \setminus Q} f
+	\mathrm {project} (f, Q) \triangleq \sum_{vars(f) - Q} f
 \end{equation}
 which is essentially summing out all variables not in $Q$. In the vanilla factor elimination algorithm (\texttt{FE1}), the projection is used in the return statement. This is essentially a normalization step (onto variables specified only).
 
@@ -501,8 +501,8 @@ We use $+(n_1, n_2)$ to denote an addition node that has $n_1$ and $n_2$ as its 
 
 \paragraph{Procedure.}
 \begin{enumerate}
-	\item \textbf{Made nodes for each CPT.} For each family $X|U$, construct nodes $\star (\lambda_x, \theta_{x | u} )$ for each instantiation $xu$ of $XU$. 
-	\item \textbf{Eliminate Everything.} We apply VE to eliminate all variables in the network to reach trivial instantiation $\top$ (corresponds to root). 
+	\item \textbf{Make nodes for each CPT.} For each family $X|U$, construct nodes $\star (\lambda_x, \theta_{x | u} )$ for each instantiation $xu$ of $XU$. 
+	\item \textbf{Eliminate Everything.} We apply VE to eliminate all variables in the network to reach trivial instantiation $\top$ (corresponds to root). During the process, we construct the tree using the operations defined above: $* / +$. 
 \end{enumerate}
 
 \section{Maximum Likelihood Learning}
@@ -744,7 +744,7 @@ Consider a causal graph $G$ and causal effect $\pr(y_x)$. A set of variables $\m
 \subsubsection{Exogenous X\label{sec:exox}}
 For the query $\pr (y_x)$, when $X$ is an exogenous variable, meaning that it has no parents, 
 \begin{equation}
-	\pr(y _x) = \pr ( y | x)
+	\pr(y _x) = \pr (y | x)
 \end{equation}
 
 \subsection{The Do-Calculus}
