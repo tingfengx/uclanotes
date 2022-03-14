@@ -389,6 +389,22 @@ The Message that $i$ sends to $j$ is
 \end{equation}
 where the product is off all the messages from edges except for the output direction and $S_{ij}$ is the separator defined in Section \ref{sec:elimination tree}.
 
+\subsection{Join Tree Algorithm}
+\paragraph{Definition.} A join tree for a DAG $G$ is a pair $(T, \mathbb C)$ where $T$ is a tree and $\mathbb C$ is a function that maps each node $i$ in tree into a label $\mathbb C_i$, called a cluster. The join tree must satisfy the following properties, 
+\begin{itemize}
+	\item The cluster $\mathbb C_i$ is a set of nodes from DAG $G$
+	\item Each family in the DAG $G$ must appear in some cluster $\mathbb C_i$ 
+	\item If a node appears in two clusters $\mathbb C_i$ and $\mathbb C_j$, then it must also appear in every cluster $\mathbb C_k$ in between nodes $i, j$. (Join-tree Property.)
+\end{itemize}
+
+\paragraph{Join Tree Width.} The width of a join tree is equal to the size of the largest cluster minus one. 
+
+\paragraph{Minimal Join Tree.} A join tree for a DAG $G$ is said to be minimal if it ceases to be a join tree for $G$ once we remove a variable from one if its clusters. 
+
+\paragraph{DAG Tree Width.} The tree width of a DAG is defined as the width of its best join tree. \footnote{In VE, we also said that the tree width of a DAG is the width of its best elimination order. These two quantities are equal indeed.} 
+
+\paragraph{Elimination Trees are Join Trees.} The clusters of an elimination tree satisfy the three properties of a join tree states before. 
+
 
 \section{Inference by Conditioning}
 \subsection{Run time Comparison}
