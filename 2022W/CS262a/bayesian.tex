@@ -569,7 +569,47 @@ and
 \paragraph{Difference.} The key difference is that in \textbf{EME2} does not reference the expected empirical distribution (there is no $D$ in the subscript of $\pr$; while \textbf{EME1} does reference. Instead, \textbf{EME2} computes EM estimates by performing inference on a bayesian network parameterized by the previous parameter estimates $\theta^k$.  
 
 \subsection{Graph Structure Learning}
-The criteria scores, LL, MDL, AIC etc\todo{add}
+\paragraph{Conditional Entropy.}
+\begin{equation}
+	\ent_D (X | \mathbf U ) = - \sum_{x\bu} \pr_D (x \bu) \log_2 \pr_D(x | \bu)
+\end{equation}
+
+\paragraph{Log-Likelihood.}
+\begin{equation}
+	\mathrm {LL}(G|D) = -N \sum_{X\mathbf U} \ent_D(X | \mathbf U)
+\end{equation}
+where $X\mathbf U$ are families in the structure $G$ and $D$ is a complete dataset of size $N$. 
+
+\paragraph{Mutual Information.}
+\begin{equation}
+	\mathrm {MI}_D (X, U) = \sum_{x, u} \pr_D(x, u) \log\frac{\pr_D(x, u)}{\pr_D(x) \pr_D(u)}
+\end{equation}
+
+\paragraph{Tree-Score Measure}
+\begin{equation}
+	tScore(G|D) = \sum_{U \rightarrow X} \mathrm {MI}_D (X, U)
+\end{equation}
+
+\paragraph{Scores - General}
+The dimension of a DAG $G$ is defined as
+\begin{equation}
+	||G|| = \sum_{i = 1}^n ||X_i \mathbf U_i ||
+\end{equation}
+where family size 
+\begin{equation}
+	||X_i \mathbf U_i || = (X_i^\# - 1) \mathbf U_i^\#
+\end{equation}
+In general, scores could be written as 
+\begin{equation}
+	Score(G|D) = \mathrm{LL}(G|D) - \psi (N) ||G||
+\end{equation}
+
+\paragraph{Akaike Information Criterion (AIC).} is when we choose $\psi (N)$ to be a constant independent of $N$. 
+
+\paragraph{Minimum Description Length (MDL).} is when we take
+\begin{equation}
+	\psi(N) = \frac{\log_2 N}{2}
+\end{equation} 
 
 \section{Bayesian Learning}
 \subsection{Meta Network}
