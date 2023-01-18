@@ -1,0 +1,321 @@
+\documentclass[11pt]{book}
+
+\usepackage{geometry}
+\usepackage{amssymb}
+\usepackage[
+    xetex, 
+    dvipsnames
+]{xcolor}
+\usepackage[
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=Thistle
+]{hyperref}
+\usepackage{fancyhdr}
+\usepackage{datetime}
+\usepackage{xargs}
+\usepackage{ccicons}
+\usepackage{mdframed}
+\usepackage{caption}
+\usepackage{cancel}
+\usepackage{parskip}
+\usepackage[nottoc]{tocbibind}
+%\usepackage[
+%    outputdir=.texpadtmp
+%]{minted}
+
+% ==== License =====
+\usepackage[
+    type={CC}, 
+    modifier={by-nc-sa}, 
+    version={4.0},
+]{doclicense}
+
+% ==== set font ====
+\usepackage{amsmath}
+\usepackage{unicode-math}
+%\setmainfont{texgyrepagella-regular.otf}
+\setmainfont{Palatino}
+\setmathfont{texgyrepagella-math.otf}
+
+% ==== todo notes ====
+\usepackage[
+    colorinlistoftodos,
+    prependcaption,
+    textsize=tiny
+]{todonotes}
+\newcommandx{\note}[2][1=]{\todo[linecolor=Thistle,backgroundcolor=Thistle!25,bordercolor=Thistle,#1]{#2}}
+\newcommandx{\unsure}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
+\newcommandx{\change}[2][1=]{\todo[linecolor=blue,backgroundcolor=blue!25,bordercolor=blue,#1]{#2}}
+\newcommandx{\info}[2][1=]{\todo[linecolor=OliveGreen,backgroundcolor=OliveGreen!25,bordercolor=OliveGreen,#1]{#2}}
+
+% General
+\newcommand{\mc}[1]{\mathcal{#1}}
+
+% Math Bold Font, Vector Notations
+\newcommand{\ba}{\mathbf{a}}
+\newcommand{\bb}{\mathbf{b}}
+\newcommand{\bc}{\mathbf{c}}
+\newcommand{\bd}{\mathbf{d}}
+\newcommand{\be}{\mathbf{e}}
+\renewcommand{\bf}{\mathbf{f}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\bi}{\mathbf{i}}
+\newcommand{\bj}{\mathbf{j}}
+\newcommand{\bk}{\mathbf{k}}
+\newcommand{\bl}{\mathbf{l}}
+\newcommand{\bm}{\mathbf{m}}
+\newcommand{\bn}{\mathbf{n}}
+\newcommand{\bo}{\mathbf{o}}
+\newcommand{\bp}{\mathbf{p}}
+\newcommand{\bq}{\mathbf{q}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\bu}{\mathbf{u}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bz}{\mathbf{z}}
+\newcommand{\bzero}{\mathbf{0}}
+
+% Proofs, Structures
+\newcommand{\proof}{\tit{\underline{Proof:}}} % This equivalent to the \begin{proof}\end{proof} block
+\newcommand{\proofforward}{\tit{\underline{Proof($\implies$):}}}
+\newcommand{\proofback}{\tit{\underline{Proof($\impliedby$):}}}
+\newcommand{\proofsuperset}{\tit{\underline{Proof($\supseteq$):}}}
+\newcommand{\proofsubset}{\tit{\underline{Proof($\subseteq$):}}}
+\newcommand{\contradiction}{$\longrightarrow\!\longleftarrow$}
+\newcommand{\qed}{\hfill $\blacksquare$}
+
+% Number Spaces, Vector Space
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\real}{\mathbb{R}}
+\newcommand{\complex}{\mathbb{C}}
+\newcommand{\field}{\mathbb{F}}
+
+% customized commands
+\newcommand{\settag}[1]{\renewcommand{\theenumi}{#1}}
+\newcommand{\tbf}[1]{\textbf{#1}}
+\newcommand{\tit}[1]{\textit{#1}}
+\newcommand{\largeover}[1]{\mkern 1.5mu\overline{\mkern-1.5mu#1\mkern-1.5mu}\mkern 1.5mu}
+\newcommand{\double}[1]{\mathbb{#1}} % Set to behave like that on word
+\newcommand{\trans}[3]{$#1:#2\rightarrow{}#3$}
+\newcommand{\map}[3]{\text{$\left[#1\right]_{#2}^{#3}$}}
+\newcommand{\dime}[1]{\mathrm{dim}(#1)}
+\newcommand{\mat}[2]{M_{#1 \times #2}(\R)}
+\newcommand{\aug}{\fboxsep=-\fboxrule\!\!\!\fbox{\strut}\!\!\!}
+\newcommand{\basecase}{\textsc{\underline{Basis Case:}} }
+\newcommand{\inductive}{\textsc{\underline{Inductive Step:}} }
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+\newcommand{\independent}{\perp \!\!\! \perp}
+
+\newcommand{\mods}{\mathrm{Mods}}
+\newcommand{\pr}{\mathrm{Pr}}
+\newcommand{\ent}{\mathrm{ENT}}
+\newcommand{\mi}{\mathrm{MI}}
+\newcommand{\dsep}{\mathrm{dsep}}
+
+\newtheorem{theorem}{Theorem}[chapter]
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{algorithm}{Algorithm}[chapter]
+\newtheorem{proposition}{Proposition}[chapter]
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{lemma}[theorem]{Lemma}
+
+
+% Set section number in front of equation enumerations
+\counterwithin{equation}{section}
+\counterwithin{footnote}{section}
+\author{Tingfeng Xia}
+\title{CS289a: Great Theory Hits of 21st Century}
+\date{Winter 2023}
+
+\begin{document}
+\maketitle
+
+\vspace*{\fill}
+Notes reorganized from \url{https://hackmd.io/@raghum/greathits}.\newline \newline 
+\doclicenseThis
+
+\tableofcontents
+
+\chapter{Undirected s-t Connectedness}
+
+\section{Computing Resources}
+Four main computing resources that we consider as limited (and measure the performance of our algorithms against)
+\begin{itemize}
+	\item Time 
+	\item Memory
+	\item Randomness
+	\item Communication
+\end{itemize}
+
+\section{Problem Statement}
+
+\begin{itemize}
+	\item \textbf{Input}: Graph $G = (V, E)$; with source and target marked as $s, t$
+	\item \textbf{Output}: YES iff $s$ and $t$ are connected, NO otw.
+\end{itemize}
+
+Above is the ``traditional'' definition of $s-t$ connectivity which we can solve with a vanilla BFS or DFS. This will take $\mathcal O ( |V| + |E| ) $ and $\mathcal O (|V| )$ extra bits of space / memory. The question is then, can we solve the same problem with sub-linear extra memory usage. 
+
+\begin{proposition}
+	There is a randomized algorithm with $5 \log |V|$ bits of additional memory (directed and undirected graphs). 
+\end{proposition}
+
+\begin{proposition}[Omer Reingold, 2005]
+	There is a log space ($\mathcal O ( \log | V | )$) algorithm \textbf{(deterministic)} for undirected graphs. \footnote{first great hit ...}
+\end{proposition}
+
+It is yet unknown if we can achieve log space for directed graphs (with deterministic algorithm). The best known algorithms runs with $\mathcal O (\log |V| ) ^{3/2}$ bits of memory. Why is this so challenging? 
+
+\begin{proposition}
+	If divided $s-t$ connectivity can be solved with $\mathcal O (\log |V| )$ extra bits of memory (without randomness), then any randomized algorithm can be made deterministic at the expenses of a constant factor increase in memory. 
+\end{proposition}
+
+\section{Randomized Algorithm for Connectivity}
+\begin{algorithm}[Random Walk Algorithm for Connectivity] Here is the algorithm
+	\begin{itemize}
+		\item $steps \gets 0 $ 
+		\item $current \gets s$; $target \gets t$
+		\item while $steps < T$
+		\begin{itemize}
+			\item $current \gets $ random neighbor of current
+			\item if $current == target$ return $YES$
+		\end{itemize}
+		\item return $NO$
+	\end{itemize}
+\end{algorithm}
+The total memory for this algorithm is 
+\begin{equation}
+	2 \log N + \log T \leq 5 \log N
+\end{equation}
+extra bits, assuming we can get random neighbor. 
+
+\begin{proposition}[Alenilaus, 80s]
+	If $T = 100N^3$ steps, then $Pr$[Algorithm wrong] < $\frac{1}{3}$
+\end{proposition}
+which can improved to arbitrary accuracy by repeating the algorithm. Algorithms of this nature can perform bad on graphs known as ``Lollipop Graphs'' and even worse a ``Dumbell Graph''
+
+
+\section{Log Space USTCON}
+Here we highlight the progression in space complexity in various papers
+\begin{itemize}
+	\item \textbf{Nisan, 92}: Space $\mathcal O (\log ^ 2 N)$, time $N ^{\mathcal O (1)}$ algorithm... improved to $\mathcal O (\log ^ {4/3} N)$ in space. 
+	\item \textbf{Reingold, 05}: Space $\mathcal O (\log N)$, time $N ^{\mathcal O (1)}$ algorithm. 
+	\item \textbf{Trifornov, 05}: Space $\mathcal O ((\log N )(\log\log N))$ algorithm. 
+\end{itemize}
+
+
+\section{Spectral Graph Theory}
+Consider an undirected graph $G = (V, E)$, 
+\begin{definition}[Degree]
+	Degree of a vertex $v$ is the number f edges $v$ is connected to.
+\end{definition}
+
+\begin{definition}[Regular]
+	Graphs is ``regular'' if all vertices have same degree. 
+\end{definition}
+
+\begin{definition}[Adjacency Matrix]
+	$A(G)$ is a symmetric matrix where $A(G)_{ij}$ = 1 if $\{i, j\}$ is an edge, 0 otw. 
+\end{definition}
+
+\begin{definition}[Normalized Adj Matrix]
+	If $G$ is regular and has degree $D$, then the normalized adjacency matrix is defined as 
+	\begin{equation}
+		M(G) \equiv \frac{A(G)}{D}
+	\end{equation}
+\end{definition}
+
+\begin{lemma}
+	If $G$ is regular, then $1$ is an eigenvalue of $M(G)$. And $\bv_1 = \begin{bmatrix}
+		1 & 1 & \dots & 1
+	\end{bmatrix}^\top$ is an eigenvector with eigenvalue 1. 
+\end{lemma}
+
+\begin{proposition}[Eigenvalues of Regular Graphs]
+	If $G$ is regular, then all eigenvalues of $M(G)$ have magnitude $\leq 1$. 
+\end{proposition}
+
+\begin{proof}
+	WLOG assume $x_3$ is the largest entry in the vector $\bx$, then
+	\begin{align}
+		\lambda |x_3| 
+		&= |M_{31}x_1 + M_{32}x_2 + ... + M_{3N}x_N| \\
+		&\leq M_{31}|x_3| + M_{32}|x_3| + ... + M_{3N} |x_3| \\
+		&= (M_{31} + ... M_{3N}) |x_3| \\
+		&= 1 |x_3|
+	\end{align}
+	Thus, $\lambda \leq 1$. \qed
+\end{proof}
+
+\begin{proposition}[Connectedness and Matrices]\todo{Might appear on exam 1}
+	Regular $G = (V, E)$ is connected if and only if the only eigenvector with eigenvalue 1 for $M(G)$ is the all 1 vector. 
+\end{proposition}
+
+\begin{proposition}[Eigenvalues of a Regular Graph]\todo{Might appear on exam 1}
+	If $G$ is regular, then the eigenvalues of $M(G)$ are 
+	\begin{equation}
+		1 = \lambda_1 \geq \lambda_2 \geq \dots \geq \lambda_N
+	\end{equation}
+\end{proposition}
+
+\begin{proposition}\todo{Might appear on exam 1}
+	$G$ is connected and regular if and only if 
+	\begin{equation}
+		\max ( |\lambda_2| , |\lambda_3|, \dots, |\lambda_N|) \leq 1
+	\end{equation}
+\end{proposition}
+
+\begin{proposition}[Eigenvalues of D-Regular Graphs]
+	If $G$ is a D-regular graph, then
+	\begin{itemize}
+		\item 1 is an eigenvalue of $M(G)$, and 
+		\item all eigenvalues of $M(G)$ are at most 1 in absolute value
+	\end{itemize}
+\end{proposition}
+
+\begin{definition}[Self Loops]
+	We add connections from each node in the graph to themselves. In the matrix representation, we set $G_{ii} = 1, \forall i$. 
+\end{definition}
+
+\begin{definition}[Second Largest Eigenvalue]
+	... denoted as $\lambda(G)$ or $\lambda_2(G)$. 
+\end{definition}
+
+\begin{lemma}
+	If $G$ is D-regular and \textbf{has self loops}, then $G$ is connected if and only if $\lambda(G) < 1$.
+\end{lemma}
+
+\begin{proof} We first show $G$ is disconnected implies $\lambda(G) = 1$ (via contrapositive). 
+	\todo{add later}
+\end{proof}
+
+\begin{definition}[Spectral Gap]
+	Spectral Gap of a D-regular graph G is defined as 
+	\begin{equation}
+		\text{Spectral Graph} 
+		\equiv 1 - \lambda(G)
+	\end{equation}
+\end{definition}
+
+\begin{lemma}
+	If $G$ is a D-regular connected graph with self-loops, then
+	\begin{equation}
+		\lambda (G) \leq 1 - \frac{1}{2D^2 \cdot N^2}
+	\end{equation}
+\end{lemma}
+
+\begin{definition}
+	We say a graph $G$ is $(N, D, \lambda)$ if it has $N$ vertices, $D$ regular and $\lambda(G) \leq \lambda$. 
+\end{definition}
+
+
+\section{Easy Cases}
+
+
+\end{document}
