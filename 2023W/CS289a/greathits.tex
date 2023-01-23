@@ -1,6 +1,6 @@
-\documentclass[11pt]{book}
+\documentclass[11pt, letter]{book}
 
-\usepackage{geometry}
+\usepackage[margin=1.1in]{geometry}
 \usepackage{amssymb}
 \usepackage[
     xetex, 
@@ -247,7 +247,7 @@ Consider an undirected graph $G = (V, E)$,
 		\lambda |x_3| 
 		&= |M_{31}x_1 + M_{32}x_2 + ... + M_{3N}x_N| \\
 		&\leq M_{31}|x_3| + M_{32}|x_3| + ... + M_{3N} |x_3| \\
-		&= (M_{31} + ... M_{3N}) |x_3| \\
+		&= (M_{31} + \ldots + M_{3N}) |x_3| \\
 		&= 1 |x_3|
 	\end{align}
 	Thus, $\lambda \leq 1$. \qed
@@ -291,8 +291,69 @@ Consider an undirected graph $G = (V, E)$,
 	If $G$ is D-regular and \textbf{has self loops}, then $G$ is connected if and only if $\lambda(G) < 1$.
 \end{lemma}
 
-\begin{proof} We first show $G$ is disconnected implies $\lambda(G) = 1$ (via contrapositive). 
-	\todo{add later}
+\begin{proof} \textit{\textbf{We first show $G$ is disconnected implies $\lambda(G) = 1$ (via contrapositive).}} Consider a graph $G$ such that it is comprised of two clouds of disjoint graphs $G_1$ and $G_2$. Then the adjacency matrix of $G$ will take a block matrix form
+\begin{equation}
+	M_G = \begin{bmatrix}
+		M_{G_1} & [\bzero ]  \\
+		[\bzero ] & M_{G_2}
+	\end{bmatrix}
+\end{equation}
+From linear algebra, we know that the eigenvalues of $M_G$ will be the union of eigenvalues of $M_{G_1}$ and $M_{G_2}$. Now, consider
+\begin{equation}
+	\bx^{(1)} = 
+	\begin{bmatrix}
+		1 \\ 1 \\ \vdots \\ 0 \\ 0
+	\end{bmatrix} 
+	\quad \quad \text{and} \quad \quad
+	\bx^{(2)} = 
+	\begin{bmatrix}
+		0 \\ 0 \\ \vdots \\ 1 \\ 1
+	\end{bmatrix}
+\end{equation}
+are both eigenvectors of $M_G$ with eigenvalues of 1. Hence, there are two orthogonal eigenvectors with eigenvalue 1, and $\lambda(G) = 1$ as wanted. 
+\qed
+
+\textit{\textbf{We now show that if $G$ is connected, then $\lambda(G) < 1$.}} We already know that 1 is an eigenvalue of $M_G$ with the $\mathbf 1$ vector as eigenvector. Suppose $\lambda$ is also an eigenvalue with $\bv$ as an eigenvector and $\bv$ is perpendicular to $\mathbf 1$. Now, 
+\begin{equation}
+	\label{eq:eigenvector_perp_to_1}
+	\mathbf 1 \perp \bv \implies \langle \bv, \mathbf 1 \rangle = v_1 + v_2 + \dots  + v_N  = 0
+\end{equation}
+The vector $\bv$ must contain some positive entries and some negative entries, we separate them into two sets
+\begin{equation}
+	P = \{ i : v_i \geq 0\} \quad \text{and} \quad N = \{ i : v_i < 0 \}
+\end{equation}
+where both sets are non-empty by Eq. \ref{eq:eigenvector_perp_to_1}. Taking a step back and reorganize the goal into matrix form
+\begin{equation}
+	M_G \begin{bmatrix}
+		+ \\ + \\ \vdots \\ - \\ -
+	\end{bmatrix} = \lambda \begin{bmatrix}
+		+ \\ + \\ \vdots \\ - \\ -
+	\end{bmatrix}\quad \quad \text{where} \quad \begin{bmatrix}
+		+ \\ + \\ \vdots \\ - \\ - \end{bmatrix} = \begin{bmatrix}
+			\mathbf P \\ - \\ \mathbf N
+		\end{bmatrix} = \bv
+\end{equation}
+Per element, 
+\begin{equation}
+	\sum_{j = 1}^N M_G[i, j]\cdot v_j = \lambda \cdot v_i, \quad \forall i
+\end{equation}
+By the connectedness assumption, there must always be some edge connecting $P$ and $N$ the two sets, so
+\begin{align}
+	\lambda \left( \sum_{i \in P} v_i \right) 
+	&= \sum_{i \in P} \left( \sum_{j = 1}^N M_G[i, j] \cdot v_j \right) \\
+	&= \sum_{j = 1}^N v_j \sum_{i \in P} M_G[i, j] \\
+	&= \sum_{j \in P} v_j \left( \sum_{i \in P} M_G[i, j] \right) + \sum_{j \in N} v_j \left( \sum_{i \in P} M_G[i, j] \right) \\
+	&\leq \sum_{j \in P} v_j (1) + \sum_{j \in N} v_j \left( \sum_{i \in p} M_G[i, j] \right) \\
+	&< \sum_{j \in P} v_j
+\end{align}
+where in the last two steps we utilized the facts that $M_G$'s columns add up to 1 and we have at least 1 non-zero entry in each row and col of $M_G$. 
+
+In summary, we obtained
+\begin{equation}
+	\lambda \left( \sum_{i \in P} v_i \right) < \left( \sum_{j \in P} v_j \right) \quad \implies \quad \lambda < 1
+\end{equation}
+\qed
+
 \end{proof}
 
 \begin{definition}[Spectral Gap]
@@ -315,7 +376,276 @@ Consider an undirected graph $G = (V, E)$,
 \end{definition}
 
 
-\section{Easy Cases}
+\section{Path Enumeration}
+The simplest case is wen the shortest path between $s, t$ is short. Then, we can enumerate all paths of some length and see if $t$ is reached. 
+
+The algorithm goes as follows
+\begin{algorithm}
+	1, Explore all paths of length less than or equal to $T$ from $s$. 2, If you reach $t$ in these explorations, output YES. If not, output NO. 
+\end{algorithm}
+This takes $\mathcal O (\log D) \cdot T$ extra space, where $D$ is the degree of the graph and $T$ is the loop times. 
+
+\begin{definition}[Graph Diameter]
+	Diameter of a graph is defined as the length of the longest shortest path for any pair of vertices. By convention, 
+	\begin{itemize}
+		\item G disconnected, diameter = $\infty$, and
+		\item G connected, diameter = $\max_{i \neq j} \left( ShortestPath (i, j) \right)$
+	\end{itemize}
+\end{definition}
+
+\begin{mdframed}
+	\begin{proposition}[Extra Space for Path Enumeration]
+		Path enumeration will solve the $s-t$ connectivity in with max extra space 
+		\begin{equation}
+			(\log D) \cdot \Delta (G) \label{eq:path_enumeration_extra_space}
+		\end{equation} 
+		bits, where $\Delta (G)$ is the max diameter of connected components of $G$. 
+	\end{proposition}
+\end{mdframed}
+
+\begin{proposition}
+	If $G$ is connected, D-regular, has self-loops, then\footnote{$\lambda$ is the second largest eigenvalue, $N$ is the matrix size (number of nodes).}
+	\begin{equation}
+		Diameter(G) \leq \lceil \log _{\frac{1}{\lambda}} N \rceil + 1
+	\end{equation}
+\end{proposition}
+
+
+\subsection{Reingold's Idea}\label{reingold_algo}
+We see from the proposition above that the bigger the spectral gap, the smaller the number of extra bits we need in space for the algorithm. The problem then is how we can transform the graph enlarging the spectral gap while not hurting the degree too much. Formally, we want to transform $(G, s, t)$ to $(\bar G, \bar s, \bar t)$ such that 
+\begin{itemize}
+	\item $s, t$ connected in $G$ if and only if $\bar s, \bar t$ connected in $\bar G$, and
+	\item $\lambda (\bar G) < \lambda (G)$, and
+	\item $Degree(\bar G)$ is not much worse then $Degree(G)$
+\end{itemize}
+
+\subsection{Reducing Degree} \label{sec:reducing_degree}
+For the first part of Eq. \ref{eq:path_enumeration_extra_space}, we can reduce the degree of any graph with
+\begin{mdframed}
+	\begin{algorithm}[Degree Reduce Procedure] The procedure, 
+		\begin{itemize}
+			\item Break each edge into two vertices, and 
+			\item Add local edges at each ``old'' vertices, and
+			\item Add self loops to make graph
+		\end{itemize}
+	\end{algorithm}
+\end{mdframed}
+
+\begin{proposition}
+	The procedure outlined above generates a degree 4 graph. 
+\end{proposition}
+
+
+\subsection{Improving Spectral Gap}
+\begin{definition}[Multi-graphs]
+	A multi-graph is a superset of our old definition of a graph, except we allow repeated edges between nodes. This is represented as values larger than 1 in the adjacency matrix. All definitions are carried over without change: degree, normalized adjacency matrix, and $\lambda (G)$.
+\end{definition}
+
+With the degree reducing algorithm in Sec. \ref{eq:path_enumeration_extra_space}, we can reduce any graph to a degree of 4. This means Eq. \ref{eq:path_enumeration_extra_space} is now transformed into
+\begin{equation}
+	( \log 4 ) \cdot \Delta (G) = 2 \cdot \Delta (G)
+\end{equation}
+extra bits of storage. How should we improve
+\begin{equation}
+	\Delta (G) \leq \log _{\frac{1}{\lambda}} N
+\end{equation}
+which is the largest diameter of any connected component?
+
+\begin{mdframed}
+	\textbf{Idea:} Input $G, s, t$ where $G$ has self-loops and transform that into $G', s', t'$ where 
+	\begin{equation}
+		\lambda (G') \ll \lambda (G)
+	\end{equation}
+	\textbf{Goal:} Operations to improve (decrease) the second largest eigenvalue. 
+\end{mdframed}
+
+\begin{definition}[Squaring the Graph]
+	Add new edges: if $(u, v)$ and $(v, w)$ are edges, then add an edge $(u, w)$. 
+\end{definition}
+
+\begin{proposition}[Adjacency of Squared Graph]
+	\begin{equation}
+		A_{G^2} = ( A_G ) ^ 2
+	\end{equation}
+	in matrix representation, and we allow multi-graph in this setting. 
+\end{proposition}
+
+\begin{proof}
+	\begin{equation}
+		(A_G)^2_{[i, j]} = \sum_{k = 1}^N (A_{G})_{[i, k]} (A_{G})_{[k, j]}
+	\end{equation}
+	\qed
+\end{proof}
+
+\begin{proposition}[Squared Graph Spectral Gap]
+	If $G$ is a $(N, D, \lambda)$ graph with self loops, then $G^2$ is a $(N, D^2, \lambda^2)$ graph with self loop. Since connected $\implies \lambda < 0$, $\lambda^2 < \lambda$.
+\end{proposition}
+
+\begin{theorem}[Squared Matrix Spectral Decomposition]
+	\label{thm:squared_matrix_spectral_decomposition}
+	$M$ is a symmetric matrix with eigenvalues
+	\begin{equation}
+		\lambda_1 \geq \lambda_2 \geq \lambda_3 \geq \dots \geq \lambda_N
+	\end{equation}
+	then, $M^2$ is a symmetric matrix with the same eigenvectors but with eigenvalues
+	\begin{equation}
+		\lambda_1^2, \lambda_2^2, \dots, \lambda_N^2 
+	\end{equation}
+\end{theorem}
+
+\begin{proof}
+	For $M$, we have
+	\begin{equation}
+		M\bx = \lambda \bx
+	\end{equation}
+	Then, 
+	\begin{equation}
+		M^2 \bx = \lambda M\bx = \lambda^2 \bx
+	\end{equation}
+	This concludes the proof. \qed
+\end{proof}
+
+\begin{corollary}[Squared Graph Eigenvalues]
+	It follows from Thm. \ref{thm:squared_matrix_spectral_decomposition} directly that if $\lambda_1, \dots, \lambda_N$ are eigenvalues for the original graph matrix $M$, then the new squared $M^2$ matrix has the same eigenvectors but with eigenvalues $\lambda_1^2, \lambda_2^2, \dots, \lambda_N^2 $ instead. 
+\end{corollary}
+
+\begin{proposition}[Normalized Adjacency of Squared Graph]
+	The normalized graph matrix of $G^2$, is such that
+	\begin{equation}
+		M_{G^2} = \left ( M_G \right ) ^2
+	\end{equation}
+\end{proposition}
+
+\begin{proof}
+	Recall that 
+	\begin{equation}
+		M_G = \frac{A_G}{D}
+	\end{equation}
+	Then, 
+	\begin{equation}
+		M_{G^2} = \frac{A_{G^2}}{D^2} = \frac{(A_G)^2}{D^2} = \left( \frac{A_G}{D} \right) ^2 = (M^G) ^2
+	\end{equation}
+	This concludes the proof. \qed
+\end{proof}
+
+\begin{proposition}[Square Graph Does Not Save Memory]
+	Recall that our initial goal was to save extra memory used. Here with squaring, though we enlarged the spectral gap as desired ($(1 - \lambda) \rightarrow (1 - \lambda^2) $, the degree got larger ($D \rightarrow D^2$). In total, extra bits is
+	\begin{align}
+		\left ( \log D \right ) \cdot \log_{\frac{1}{\lambda}} N
+		&\leadsto \left( \log D^2 \right) \log _{\frac{1}{\lambda^2}} N \\
+		&= 2 \cdot \log D \cdot \frac{1}{2} \cdot \log _{\frac{1}{\lambda}} N \\
+		&= \left ( \log D \right ) \cdot \log_{\frac{1}{\lambda}} N
+	\end{align}
+	which is exactly what we had before. This suffices as a proof for squaring matrices alone does not bring any memory savings. \qed
+\end{proposition}
+
+\paragraph{Goal} Taking a step back, we can see that we need to find a powering operation that improves the second largest eigenvalue \textbf{while not increasing degree too much}. This leads to the following algorithm:
+
+\begin{mdframed}
+	\begin{algorithm}[Reingold, 2005]
+		For a graph specified as $(G, s, t)$ where $G$ is 4-regular and has self-loops, define a recursive relationship 
+		\begin{equation}
+			G_{i + 1} = G_i ^2 \textcircled{z} H
+		\end{equation}
+		where $H$ is a special graph. This recursion covers the transformation
+		\begin{equation}
+			(G, s, t) \leadsto (G_1 = G^2 \textcircled{z} H, \bar s, \bar t) \leadsto (G_2 = G_1^2 \textcircled{z} H, \bar{\bar{s}}, \bar{\bar{t}} ) \leadsto \dots
+		\end{equation}
+	\end{algorithm}
+	\paragraph{Remark} $G_i^2$ part decreases the second largest eigenvalue, and the $\textcircled{z} H$ part brings down the degree while not hurting second largest eigenvalue. 
+\end{mdframed}
+
+\begin{definition}[Consistent Labelling]
+	$G$ is a D-regular graph. A consistent labelling is a mapping 
+	\begin{equation}
+		L: \mathbb E \rightarrow [D]
+	\end{equation}
+	such that at each vertex all edges of the vertex have distinct labels. 
+\end{definition}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{figs/consistentlabelling-1.png}
+	\caption{Illustration of consistent labelling.\label{fig:consistent-labeling-1}}
+\end{figure}
+
+\paragraph{Example} Figure \ref{fig:consistent-labeling-1} depicts a consistent edge labelling of the graph. 
+
+\begin{definition}[Zig Zag Product]
+	\textbf{Input \& Output}
+	\begin{equation}
+		\left. \begin{aligned}
+ 			G: (N, D, -) \\
+ 			H: (D, D_1, -) 
+ 		\end{aligned}\right\rbrace \rightarrow G \textcircled{z} H : (ND, D_1^2, -)
+	\end{equation}
+	\textbf{Rotations}
+	\begin{align}
+		&\left. \begin{aligned}
+ 			Rot_G: [N] \times [D] \rightarrow [N] \times [D] \\
+ 			Rot_H: [D] \times [D_1] \rightarrow [D] \times [D_1]
+ 		\end{aligned}\right \rbrace 
+ 		\\
+ 		&\quad \quad \quad \quad \quad \quad
+ 		\rightarrow Rot_{G\textcircled{z} H}: [N\cdot D] \times \left( [D_1^2] \right) \rightarrow [N\cdot D] \times \left( [D_1^2] \right)
+ 		\\
+ 		&\quad \quad \quad \quad \quad \quad
+ 		\equiv Rot_{G\textcircled{z} H}: [N\cdot D] \times \left( [D_1] \times [D_1] \right) \rightarrow [N\cdot D] \times \left( [D_1] \times [D_1] \right)
+	\end{align}
+	and 
+	\begin{align}
+		&Rot_{G \textcircled {z}  H} \left ( (v, a) , (k_1, k_2) \right) : \\
+		&\quad \rightarrow (a', i') \gets Rot_H(a, k_1) \\
+		&\quad \rightarrow (w, b') \gets Rot_G (v, a') \\
+		&\quad \rightarrow (b, i'') \gets Rot_H (b', k_2) \\
+		&\quad \rightarrow \text{output} \left( (w, b), (k_2, k_1) \right)
+	\end{align}
+	\paragraph{English Explanation} The Zig-Zag product $G \textcircled{z} H$ replaces each vertex of $G$ with a copy (cloud) of $H$, and connects the vertices by moving a small step (zig) inside the cloud, followed by a big step between two clouds, and finally performs another small step (zag) inside the destination cloud. 
+\end{definition}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 \end{document}
