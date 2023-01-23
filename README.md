@@ -7,7 +7,9 @@
 ## &#x1F4DA; Notes for some of my courses at University of California Los Angeles  
 ... a continuation to [tingfengx/uoftnotes](https://tingfengx.com/uoftnotes/)
   
-### **Notes in progress:**  
+### **Notes**
+#### &#128210; 2023 Winter Quarter
+- [**CS289a**](./2023W/CS289a/greathits.pdf). Great Theory Hits of 21st Century. 
 #### &#128210; 2022 Winter Quarter
 - [**CS262a**](./2022W/CS262a/bayesian.pdf/). Bayesian Networks. The focus of this course is on the theory and practice of knowledge representation and reasoning under uncertainty within the framework of probabilistic graphical models---with a major emphasis on Bayesian belief networks.
   
