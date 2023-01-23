@@ -151,9 +151,9 @@
 \mdtheorem[style=propositionstyle]{proposition}{Proposition}[chapter]
 
 \mdfdefinestyle{definitionstyle}{%
-	linecolor=CadetBlue!20,linewidth=1pt,%
+	linecolor=BlueViolet!20,linewidth=1pt,%
 	frametitlerule=true,%
-	frametitlebackgroundcolor=CadetBlue!20,
+	frametitlebackgroundcolor=BlueViolet!20,
 	innertopmargin=\topskip,
 }
 \mdtheorem[style=definitionstyle]{definition}{Definition}[chapter]
@@ -305,18 +305,20 @@ Consider an undirected graph $G = (V, E)$,
 	Regular $G = (V, E)$ is connected if and only if the only eigenvector with eigenvalue 1 for $M(G)$ is the all 1 vector. \footnote{i.e., eigenvalue 1 has an multiplicity of 1.}
 \end{proposition}
 
-\begin{proof} [$G = (V, E)$ is connected implies $\lambda = 1$ has multiplicity of 1 for $M(G)$.]
-	Assume that there is another eigenvector 
+\begin{proof} [Regular $G = (V, E)$ is connected implies $\lambda = 1$ has multiplicity of 1 for $M(G)$.]
+	From proof to Prop. \ref{prop:eigenvalues_of_regular_graphs} we already know that $|\lambda| \leq 1$. With $x_j = \max(\bx)$ as the largest entry in the eigenvector, we recall (and abstract the inequality used back then as
 	\begin{equation}
-		\ba = \begin{bmatrix}
-			a_1 & a_2 & \dots & a_N
-		\end{bmatrix}^\top \neq \mathbf 1 
+		|\lambda||x_j| = |(M(G)\bx)_j| = \left| \sum_{v_i \in N(v_j)} x_i \right| / D \leq |x_j| 
 	\end{equation}
-	with eigenvalue of 1. 
-	
-	
-	\textit{\textbf{Next we show that }}
-	\qed
+	We are now interested in the condition of when $\lambda = 1, |\lambda| |x_j| = |x_j|$, in which case we need 
+	\begin{equation}
+		x_i = x_j, \quad \forall v_i \in N(v_j)
+	\end{equation}
+	This suffices as a proof to every eigenvector with eigenvalue 1 to $M(G)$ is the $\mathbf 1$ vector. \qed
+\end{proof}
+
+\begin{proof} [$\lambda = 1$ has multiplicity of 1 for $M(G)$ implies regular $G = (V, E)$ is connected.]
+	todo \dots
 \end{proof}
 
 \begin{proposition}[Eigenvalues of a Regular Graph]
