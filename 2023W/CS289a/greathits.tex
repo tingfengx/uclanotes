@@ -118,17 +118,64 @@
 \newcommand{\mi}{\mathrm{MI}}
 \newcommand{\dsep}{\mathrm{dsep}}
 
-\newtheorem{theorem}{Theorem}[chapter]
-\newtheorem{corollary}{Corollary}[theorem]
-\newtheorem{algorithm}{Algorithm}[chapter]
-\newtheorem{proposition}{Proposition}[chapter]
-\newtheorem{definition}{Definition}[chapter]
-\newtheorem{lemma}[theorem]{Lemma}
+\mdfdefinestyle{theoremstyle}{%
+	linecolor=Thistle!20,linewidth=1pt,%
+	frametitlerule=true,%
+	frametitlebackgroundcolor=Thistle!20,
+	innertopmargin=\topskip,
+}
+\mdtheorem[style=theoremstyle]{theorem}{Theorem}[chapter]
 
+\mdfdefinestyle{corollarystyle}{%
+	linecolor=gray!20,linewidth=1pt,%
+	frametitlerule=true,%
+	frametitlebackgroundcolor=gray!20,
+	innertopmargin=\topskip,
+}
+\mdtheorem[style=corollarystyle]{corollary}{Corollary}[theorem]
+
+\mdfdefinestyle{algorithmstyle}{%
+	linecolor=Orchid!20,linewidth=1pt,%
+	frametitlerule=true,%
+	frametitlebackgroundcolor=Orchid!20,
+	innertopmargin=\topskip,
+}
+\mdtheorem[style=algorithmstyle]{algorithm}{Algorithm}[chapter]
+
+\mdfdefinestyle{propositionstyle}{%
+	linecolor=black!20,linewidth=1pt,%
+	frametitlerule=true,%
+	frametitlebackgroundcolor=black!20,
+	innertopmargin=\topskip,
+}
+\mdtheorem[style=propositionstyle]{proposition}{Proposition}[chapter]
+
+\mdfdefinestyle{definitionstyle}{%
+	linecolor=CadetBlue!20,linewidth=1pt,%
+	frametitlerule=true,%
+	frametitlebackgroundcolor=CadetBlue!20,
+	innertopmargin=\topskip,
+}
+\mdtheorem[style=definitionstyle]{definition}{Definition}[chapter]
+
+\mdfdefinestyle{lemmastyle}{%
+	linecolor=orange!20,linewidth=1pt,%
+	frametitlerule=true,%
+	frametitlebackgroundcolor=orange!20,
+	innertopmargin=\topskip,
+}
+\mdtheorem[style=lemmastyle]{lemma}{Lemma}[chapter]
+
+\newcommand*\tcircle[1]{%
+  \raisebox{-0.5pt}{%
+    \textcircled{#1}%
+  }%
+}
 
 % Set section number in front of equation enumerations
 \counterwithin{equation}{section}
 \counterwithin{footnote}{section}
+
 \author{Tingfeng Xia}
 \title{CS289a: Great Theory Hits of 21st Century}
 \date{Winter 2023}
@@ -238,6 +285,7 @@ Consider an undirected graph $G = (V, E)$,
 \end{lemma}
 
 \begin{proposition}[Eigenvalues of Regular Graphs]
+	\label{prop:eigenvalues_of_regular_graphs}
 	If $G$ is regular, then all eigenvalues of $M(G)$ have magnitude $\leq 1$. 
 \end{proposition}
 
@@ -253,23 +301,45 @@ Consider an undirected graph $G = (V, E)$,
 	Thus, $\lambda \leq 1$. \qed
 \end{proof}
 
-\begin{proposition}[Connectedness and Matrices]\todo{Might appear on exam 1}
-	Regular $G = (V, E)$ is connected if and only if the only eigenvector with eigenvalue 1 for $M(G)$ is the all 1 vector. 
+\begin{proposition}[Connectedness and Matrices]
+	Regular $G = (V, E)$ is connected if and only if the only eigenvector with eigenvalue 1 for $M(G)$ is the all 1 vector. \footnote{i.e., eigenvalue 1 has an multiplicity of 1.}
 \end{proposition}
 
-\begin{proposition}[Eigenvalues of a Regular Graph]\todo{Might appear on exam 1}
+\begin{proof} [$G = (V, E)$ is connected implies $\lambda = 1$ has multiplicity of 1 for $M(G)$.]
+	Assume that there is another eigenvector 
+	\begin{equation}
+		\ba = \begin{bmatrix}
+			a_1 & a_2 & \dots & a_N
+		\end{bmatrix}^\top \neq \mathbf 1 
+	\end{equation}
+	with eigenvalue of 1. 
+	
+	
+	\textit{\textbf{Next we show that }}
+	\qed
+\end{proof}
+
+\begin{proposition}[Eigenvalues of a Regular Graph]
 	If $G$ is regular, then the eigenvalues of $M(G)$ are 
 	\begin{equation}
 		1 = \lambda_1 \geq \lambda_2 \geq \dots \geq \lambda_N
 	\end{equation}
 \end{proposition}
 
-\begin{proposition}\todo{Might appear on exam 1}
-	$G$ is connected and regular if and only if 
+\begin{proof}
+	This follows from the proof for Prop. \ref{prop:eigenvalues_of_regular_graphs} where we proved that all eigenvalues of $M(G)$ have magnitude $\leq$ 1. Since the one vector $\mathbf 1$ is an eigenvector of $M(G)$ with eigenvalue one, we know that $\lambda_1 = 1$ is attainable. This suffices as a proof. \qed
+\end{proof}
+
+\begin{proposition}
+	$G$ is connected and regular if and only if on $M(G)$
 	\begin{equation}
 		\max ( |\lambda_2| , |\lambda_3|, \dots, |\lambda_N|) \leq 1
 	\end{equation}
 \end{proposition}
+
+\begin{proof}
+	todo ... 
+\end{proof}
 
 \begin{proposition}[Eigenvalues of D-Regular Graphs]
 	If $G$ is a D-regular graph, then
@@ -291,7 +361,9 @@ Consider an undirected graph $G = (V, E)$,
 	If $G$ is D-regular and \textbf{has self loops}, then $G$ is connected if and only if $\lambda(G) < 1$.
 \end{lemma}
 
-\begin{proof} \textit{\textbf{We first show $G$ is disconnected implies $\lambda(G) = 1$ (via contrapositive).}} Consider a graph $G$ such that it is comprised of two clouds of disjoint graphs $G_1$ and $G_2$. Then the adjacency matrix of $G$ will take a block matrix form
+\begin{proof} 
+[$G$ is disconnected implies $\lambda(G) = 1$ (via contrapositive).] 
+Consider a graph $G$ such that it is comprised of two clouds of disjoint graphs $G_1$ and $G_2$. Then the adjacency matrix of $G$ will take a block matrix form
 \begin{equation}
 	M_G = \begin{bmatrix}
 		M_{G_1} & [\bzero ]  \\
@@ -313,7 +385,9 @@ From linear algebra, we know that the eigenvalues of $M_G$ will be the union of 
 are both eigenvectors of $M_G$ with eigenvalues of 1. Hence, there are two orthogonal eigenvectors with eigenvalue 1, and $\lambda(G) = 1$ as wanted. 
 \qed
 
-\textit{\textbf{We now show that if $G$ is connected, then $\lambda(G) < 1$.}} We already know that 1 is an eigenvalue of $M_G$ with the $\mathbf 1$ vector as eigenvector. Suppose $\lambda$ is also an eigenvalue with $\bv$ as an eigenvector and $\bv$ is perpendicular to $\mathbf 1$. Now, 
+\end{proof}
+
+\begin{proof} [If $G$ is connected, then $\lambda(G) < 1$.] We already know that 1 is an eigenvalue of $M_G$ with the $\mathbf 1$ vector as eigenvector. Suppose $\lambda$ is also an eigenvalue with $\bv$ as an eigenvector and $\bv$ is perpendicular to $\mathbf 1$. Now, 
 \begin{equation}
 	\label{eq:eigenvector_perp_to_1}
 	\mathbf 1 \perp \bv \implies \langle \bv, \mathbf 1 \rangle = v_1 + v_2 + \dots  + v_N  = 0
@@ -393,15 +467,13 @@ This takes $\mathcal O (\log D) \cdot T$ extra space, where $D$ is the degree of
 	\end{itemize}
 \end{definition}
 
-\begin{mdframed}
-	\begin{proposition}[Extra Space for Path Enumeration]
-		Path enumeration will solve the $s-t$ connectivity in with max extra space 
-		\begin{equation}
-			(\log D) \cdot \Delta (G) \label{eq:path_enumeration_extra_space}
-		\end{equation} 
-		bits, where $\Delta (G)$ is the max diameter of connected components of $G$. 
-	\end{proposition}
-\end{mdframed}
+\begin{proposition}[Extra Space for Path Enumeration]
+	Path enumeration will solve the $s-t$ connectivity in with max extra space 
+	\begin{equation}
+		(\log D) \cdot \Delta (G) \label{eq:path_enumeration_extra_space}
+	\end{equation} 
+	bits, where $\Delta (G)$ is the max diameter of connected components of $G$. 
+\end{proposition}
 
 \begin{proposition}
 	If $G$ is connected, D-regular, has self-loops, then\footnote{$\lambda$ is the second largest eigenvalue, $N$ is the matrix size (number of nodes).}
@@ -421,15 +493,14 @@ We see from the proposition above that the bigger the spectral gap, the smaller 
 
 \subsection{Reducing Degree} \label{sec:reducing_degree}
 For the first part of Eq. \ref{eq:path_enumeration_extra_space}, we can reduce the degree of any graph with
-\begin{mdframed}
-	\begin{algorithm}[Degree Reduce Procedure] The procedure, 
-		\begin{itemize}
-			\item Break each edge into two vertices, and 
-			\item Add local edges at each ``old'' vertices, and
-			\item Add self loops to make graph
-		\end{itemize}
-	\end{algorithm}
-\end{mdframed}
+
+\begin{algorithm}[Degree Reduce Procedure] The procedure, 
+	\begin{itemize}
+		\item Break each edge into two vertices, and 
+		\item Add local edges at each ``old'' vertices, and
+		\item Add self loops to make graph
+	\end{itemize}
+\end{algorithm}
 
 \begin{proposition}
 	The procedure outlined above generates a degree 4 graph. 
@@ -541,19 +612,18 @@ which is the largest diameter of any connected component?
 
 \paragraph{Goal} Taking a step back, we can see that we need to find a powering operation that improves the second largest eigenvalue \textbf{while not increasing degree too much}. This leads to the following algorithm:
 
-\begin{mdframed}
-	\begin{algorithm}[Reingold, 2005]
-		For a graph specified as $(G, s, t)$ where $G$ is 4-regular and has self-loops, define a recursive relationship 
-		\begin{equation}
-			G_{i + 1} = G_i ^2 \textcircled{z} H
-		\end{equation}
-		where $H$ is a special graph. This recursion covers the transformation
-		\begin{equation}
-			(G, s, t) \leadsto (G_1 = G^2 \textcircled{z} H, \bar s, \bar t) \leadsto (G_2 = G_1^2 \textcircled{z} H, \bar{\bar{s}}, \bar{\bar{t}} ) \leadsto \dots
-		\end{equation}
-	\end{algorithm}
-	\paragraph{Remark} $G_i^2$ part decreases the second largest eigenvalue, and the $\textcircled{z} H$ part brings down the degree while not hurting second largest eigenvalue. 
-\end{mdframed}
+\begin{algorithm}[Reingold, 2005]
+	For a graph specified as $(G, s, t)$ where $G$ is 4-regular and has self-loops, define a recursive relationship 
+	\begin{equation}
+		G_{i + 1} = G_i ^2 \tcircle{z} H
+	\end{equation}
+	where $H$ is a special graph. This recursion covers the transformation
+	\begin{equation}
+		(G, s, t) \leadsto (G_1 = G^2 \tcircle{z} H, \bar s, \bar t) \leadsto (G_2 = G_1^2 \tcircle{z} H, \bar{\bar{s}}, \bar{\bar{t}} ) \leadsto \dots
+	\end{equation}
+	
+	\paragraph{Remark} $G_i^2$ part decreases the second largest eigenvalue, and the $\tcircle{z} H$ part brings down the degree while not hurting second largest eigenvalue. 
+\end{algorithm}
 
 \begin{definition}[Consistent Labelling]
 	$G$ is a D-regular graph. A consistent labelling is a mapping 
@@ -563,11 +633,13 @@ which is the largest diameter of any connected component?
 	such that at each vertex all edges of the vertex have distinct labels. 
 \end{definition}
 
+
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{figs/consistentlabelling-1.png}
 	\caption{Illustration of consistent labelling.\label{fig:consistent-labeling-1}}
 \end{figure}
+
 
 \paragraph{Example} Figure \ref{fig:consistent-labeling-1} depicts a consistent edge labelling of the graph. 
 
@@ -577,7 +649,7 @@ which is the largest diameter of any connected component?
 		\left. \begin{aligned}
  			G: (N, D, -) \\
  			H: (D, D_1, -) 
- 		\end{aligned}\right\rbrace \rightarrow G \textcircled{z} H : (ND, D_1^2, -)
+ 		\end{aligned}\right\rbrace \rightarrow G \tcircle{z} H : (ND, D_1^2, -)
 	\end{equation}
 	\textbf{Rotations}
 	\begin{align}
@@ -587,20 +659,20 @@ which is the largest diameter of any connected component?
  		\end{aligned}\right \rbrace 
  		\\
  		&\quad \quad \quad \quad \quad \quad
- 		\rightarrow Rot_{G\textcircled{z} H}: [N\cdot D] \times \left( [D_1^2] \right) \rightarrow [N\cdot D] \times \left( [D_1^2] \right)
+ 		\rightarrow Rot_{G\tcircle{z} H}: [N\cdot D] \times \left( [D_1^2] \right) \rightarrow [N\cdot D] \times \left( [D_1^2] \right)
  		\\
  		&\quad \quad \quad \quad \quad \quad
- 		\equiv Rot_{G\textcircled{z} H}: [N\cdot D] \times \left( [D_1] \times [D_1] \right) \rightarrow [N\cdot D] \times \left( [D_1] \times [D_1] \right)
+ 		\equiv Rot_{G\tcircle{z} H}: [N\cdot D] \times \left( [D_1] \times [D_1] \right) \rightarrow [N\cdot D] \times \left( [D_1] \times [D_1] \right)
 	\end{align}
 	and 
 	\begin{align}
-		&Rot_{G \textcircled {z}  H} \left ( (v, a) , (k_1, k_2) \right) : \\
+		&Rot_{G \tcircle {z}  H} \left ( (v, a) , (k_1, k_2) \right) : \\
 		&\quad \rightarrow (a', i') \gets Rot_H(a, k_1) \\
 		&\quad \rightarrow (w, b') \gets Rot_G (v, a') \\
 		&\quad \rightarrow (b, i'') \gets Rot_H (b', k_2) \\
 		&\quad \rightarrow \text{output} \left( (w, b), (k_2, k_1) \right)
 	\end{align}
-	\paragraph{English Explanation} The Zig-Zag product $G \textcircled{z} H$ replaces each vertex of $G$ with a copy (cloud) of $H$, and connects the vertices by moving a small step (zig) inside the cloud, followed by a big step between two clouds, and finally performs another small step (zag) inside the destination cloud. 
+	\paragraph{English Explanation} The Zig-Zag product $G \tcircle{z} H$ replaces each vertex of $G$ with a copy (cloud) of $H$, and connects the vertices by moving a small step (zig) inside the cloud, followed by a big step between two clouds, and finally performs another small step (zag) inside the destination cloud. 
 \end{definition}
 
 
