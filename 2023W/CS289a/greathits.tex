@@ -223,6 +223,14 @@ It is yet unknown if we can achieve log space for directed graphs (with determin
 	If divided $s-t$ connectivity can be solved with $\mathcal O (\log |V| )$ extra bits of memory (without randomness), then any randomized algorithm can be made deterministic at the expenses of a constant factor increase in memory. 
 \end{proposition}
 
+\subsection{Log Space USTCON - Results}
+Here we highlight the progression in space complexity in various papers
+\begin{itemize}
+	\item \textbf{Nisan, 92}: Space $\mathcal O (\log ^ 2 N)$, time $N ^{\mathcal O (1)}$ algorithm... improved to $\mathcal O (\log ^ {4/3} N)$ in space. 
+	\item \textbf{Reingold, 05}: Space $\mathcal O (\log N)$, time $N ^{\mathcal O (1)}$ algorithm. 
+	\item \textbf{Trifornov, 05}: Space $\mathcal O ((\log N )(\log\log N))$ algorithm. 
+\end{itemize}
+
 \section{Randomized Algorithm for Connectivity}
 \begin{algorithm}[Random Walk Algorithm for Connectivity] Here is the algorithm
 	\begin{itemize}
@@ -246,15 +254,6 @@ extra bits, assuming we can get random neighbor.
 	If $T = 100N^3$ steps, then $Pr$[Algorithm wrong] < $\frac{1}{3}$
 \end{proposition}
 which can improved to arbitrary accuracy by repeating the algorithm. Algorithms of this nature can perform bad on graphs known as ``Lollipop Graphs'' and even worse a ``Dumbell Graph''
-
-
-\section{Log Space USTCON}
-Here we highlight the progression in space complexity in various papers
-\begin{itemize}
-	\item \textbf{Nisan, 92}: Space $\mathcal O (\log ^ 2 N)$, time $N ^{\mathcal O (1)}$ algorithm... improved to $\mathcal O (\log ^ {4/3} N)$ in space. 
-	\item \textbf{Reingold, 05}: Space $\mathcal O (\log N)$, time $N ^{\mathcal O (1)}$ algorithm. 
-	\item \textbf{Trifornov, 05}: Space $\mathcal O ((\log N )(\log\log N))$ algorithm. 
-\end{itemize}
 
 
 \section{Spectral Graph Theory}
@@ -677,19 +676,220 @@ which is the largest diameter of any connected component?
 	\paragraph{English Explanation} The Zig-Zag product $G \tcircle{z} H$ replaces each vertex of $G$ with a copy (cloud) of $H$, and connects the vertices by moving a small step (zig) inside the cloud, followed by a big step between two clouds, and finally performs another small step (zag) inside the destination cloud. 
 \end{definition}
 
+\section{Zig Zag Analysis}
+In the previous section, we highlighted a combinatorial product between two graphs called Zig Zag product. Here we present properties and analysis of the product. 
+
+\paragraph{Goal} Consider the definition, where we are given graphs
+\begin{equation}
+	G: (N, D, \lambda_G) \quad \quad 
+	\text{and} \quad \quad H : (D, D_1, \lambda_H)
+\end{equation}
+What can we tell about $G \tcircle {z} H$? In particular, it will be a $(ND, D_1^2, ??)$ graph? 
+
+\begin{definition}[Tensor Product]
+	For $A \in \real^{d_1 \times \d_1}$ and $B \in \real^{d_2 \times d_2}$, 
+	\begin{equation}
+		\real^{(d_1^2 )\times (d_2^2)} \ni A \otimes B \quad \text{where} \quad (A \otimes B)_{ij} = [A_{ij}B]
+	\end{equation}
+\end{definition}
+
+\begin{proposition}[Adjacency of Zig Zag Product]
+\label{prop:adjacency of zig zag product}
+	For $F = G \tcircle {z} H$, 
+	\begin{align}
+		A_F 
+		&= (\mathbb I _N \otimes A_H ) \cdot P_G \cdot ( \mathbb I _ N \otimes A_H ) \\
+		&= \begin{bmatrix}
+			[A_H] & [\bzero] & \dots & [\bzero] \\
+			[\bzero] & [A_H] & \dots  & [\bzero] \\
+			\vdots & \vdots & \ddots & [\vdots] \\
+			[\bzero] & [\bzero] & \dots & [A_H]
+		\end{bmatrix} \begin{bmatrix}
+			[\dots] & [\dots] & \dots & [\dots] \\
+			[\dots] & [\dots] & \dots  & [\dots] \\
+			\vdots & \vdots & \ddots & [\vdots] \\
+			[\dots] & [\dots] & \dots & [\dots]
+		\end{bmatrix} \begin{bmatrix}
+			[A_H] & [\bzero] & \dots & [\bzero] \\
+			[\bzero] & [A_H] & \dots  & [\bzero] \\
+			\vdots & \vdots & \ddots & [\vdots] \\
+			[\bzero] & [\bzero] & \dots & [A_H]
+		\end{bmatrix}
+	\end{align}
+	where each $[...]$ inside is of size $( D \times D)$, and thus the outer matrices are all of sizes $(D \times N) \times (D \times N )$. Graphically, we note that the two $(\mathbb I _N \otimes A_H )$ parts represent zig and zag steps respectively in the product while the $P$ transition is the inter-cloud big step.\footnote{A permutation transition $P$ guarantees that $P$ has only one 1 in each row and column. } 
+	
+	\paragraph{Normalized Adjacency}
+	\begin{equation}
+		M_F = A_F / D = (\mathbb I _N \otimes M_H ) \cdot P_G \cdot ( \mathbb I _ N \otimes M_H )
+	\end{equation}
+\end{proposition}
+
+\begin{lemma}[Linear Algebra: LA1]
+	\label{lemma: zig zag la 1}
+	For $G$ is a $(N, D, -)$ graph, 
+	\begin{equation}
+		\lambda_G \leq \lambda \iff M_G = (1 - \lambda) \frac{J_N}{N} + \lambda \cdot E
+	\end{equation}\footnote{$J_N$ is a box of $N \times N$ matrix, filled with 1's in every entry.}
+	where \footnote{$\norm{ \cdot }$ is the spectral norm of a matrix, \textbf{and is equal to the largest absolute eigenvalue for a symmetric matrix.} }
+	\begin{equation}
+		\norm{ E } \leq 1
+	\end{equation}
+\end{lemma}
+
+\paragraph{Remark} Consider spectral decomposition of $M_G$,
+\begin{align}
+	M_G 
+	&= 1 \cdot \begin{bmatrix}
+		1/\sqrt{n} \\ 1/\sqrt{n} \\ \vdots \\ 1/\sqrt{n}
+	\end{bmatrix} \begin{bmatrix}
+		\frac{1}{\sqrt{n}} & \frac{1}{\sqrt{n}} & \dots & \frac{1}{\sqrt{n}}
+	\end{bmatrix} + \lambda_2 \bv_2 \bv_2^\top + \lambda_3 \bv_3 \bv_3^\top + \dots + \lambda_N \bv_N \bv_N^\top \\
+	&= 1 \left( \frac{J_N}{N} \right) + \lambda_2 \bv_2 \bv_2^\top + \lambda_3 \bv_3 \bv_3^\top + \dots + \lambda_N \bv_N \bv_N^\top \\
+	&= (1 - \lambda) \left( \frac{J_N}{N} \right) + \underbrace{\left( \lambda \left( \frac{J_N}{N} \right) + \lambda_2 \bv_2 \bv_2^\top + \lambda_3 \bv_3 \bv_3^\top + \dots + \lambda_N \bv_N \bv_N^\top \right)}_{E}
+\end{align}
+If fact this sum that we called $E$ is the Eigen decomposition of $E$ itself! 
+
+\begin{lemma}[Linear Algebra LA 2]
+\label{lemma: zig zag la 2}
+	For $A, B \in \real^{N \times N}$,
+	\begin{itemize}
+		\item $\norm{ A + B } \leq \norm {A} + \norm {B}$
+		\item $\norm {A \cdot B }  \leq \norm{A} \cdot \norm{B}$
+		\item $\norm {A \otimes B} = \norm {A } \cdot \norm {B}$
+	\end{itemize}
+\end{lemma}
+
+\begin{lemma}[Linear Algebra LA 3]
+\label{lemma: zig zag la 3}
+	For any permutation matrix (each row and column has exactly one non-zero) $P$, 
+	\begin{equation}
+		\norm {P} = 1
+	\end{equation}
+\end{lemma}
+
+\begin{theorem}[Rozenmann-Vadhan 05, RVW 01]
+	\label{thm:rozenmann vadhan 05 rvw 01}
+	For 
+	\begin{equation}
+		G: (N, D, \lambda_G) \quad \quad 
+		\text{and} \quad \quad H : (D, D_1, \lambda_H)
+	\end{equation}
+	$F = G \tcircle {z} H$ is a $(ND, D_1^2, \lambda_F)$-graph, where 
+	\begin{equation}
+		\lambda_F \leq 1 - (1 - \lambda_H) ^2 (1 - \lambda_G) 
+	\end{equation}
+	
+	\paragraph{Alternatives} 
+	\begin{align}
+		& \lambda_F \leq 1 - (1 - \lambda_H) ^2 (1 - \lambda_G) \\
+		\iff & (1 - \lambda_H)^2 (1 - \lambda_G) \leq 1 - \lambda_F \\
+		\iff & Gap(H)^2 \cdot Gap(G) \leq Gap(F)
+	\end{align}
+\end{theorem}
+
+\begin{proof}
+	We start with writing out a complete form of $M_F$. Recall from earlier (Prop. \ref{prop:adjacency of zig zag product}) that 
+	\begin{equation}
+		M_F = (\mathbb I _N \otimes M_H ) \cdot P_G \cdot ( \mathbb I _ N \otimes M_H )
+	\end{equation}
+	By Lemma \ref{lemma: zig zag la 1}, we can derive
+	\begin{equation}
+		M_H = \left( ( 1- \lambda_H ) \frac{J_D}{D} + \lambda_H E_H \right) \quad\quad \text{where} \quad \norm{E_H} \leq 1
+	\end{equation}
+	Then, 
+	\begin{equation}
+		\mathbb I _ N \otimes M_H = ( 1- \lambda_H) \mathbb I _N \otimes \frac{J_D}{D} + \lambda_H \mathbb I_N \otimes E_H
+	\end{equation}
+	and thus
+	\begin{align}
+		M_F 
+		&= \left(
+			(1 - \lambda_H) \mathbb I_N \otimes \frac{J_D}{D} + \lambda_H \mathbb I_N \otimes E_H
+		\right) \times P \times \left( 
+			(1 - \lambda_H) \mathbb I_N \otimes \frac{J_D}{D} + \lambda_H \mathbb I_N \otimes E_H
+		\right) \\
+		&= ( 1- \lambda_H )^2 \left( \mathbb I _N \otimes \frac{J_D}{D} \right) \cdot P \cdot \left( \mathbb I _N \otimes \frac{J_D}{D} \right) \\
+		& \quad \quad + (1 - \lambda_H) \lambda_H \underbrace{\left( \mathbb I _N \otimes \frac{J_D}{D} \right) \cdot P \cdot ( \mathbb I _N \otimes E_H )}_{E^{(1)}} \\
+		& \quad \quad + \lambda_H ( 1-\lambda_H) \underbrace{(\mathbb I _N \otimes E_H ) \cdot P \cdot \left( \mathbb I _N \otimes \frac{J_D}{D} \right)}_{E^{(2)}}  \\
+		& \quad \quad + \lambda_H^2 \cdot \underbrace{(\mathbb I _N \otimes E_H ) \cdot P \cdot (\mathbb I _N \otimes E_H )} _{E^{(3)}} \\
+		&= ( 1- \lambda_H )^2 \left( \mathbb I _N \otimes \frac{J_D}{D} \right) P \left( \mathbb I _N \otimes \frac{J_D}{D} \right) + \underbrace{(1 - \lambda_H)\lambda_H E^{(1)} + \lambda_H(1 - \lambda_H) E^{(2)} + \lambda_H^2 E^{(3)}}_{E^{(4)}} \label{eq:zig zag expanded M_F}\\
+	\end{align}
+	
+	Here, $\norm {E^{(1)}}, \norm {E^{(2)}}, \norm {E^{(3)}} \leq 1$ by applying Lemma \ref{lemma: zig zag la 2} multiple times. I present the proof for $\norm{E^{(1)}} \leq 1$ here.
+ 	\begin{align}
+		\norm{E^{(1)}}
+		&= \norm{ \left( \mathbb I _N \otimes \frac{J_D}{D} \right) \cdot P \cdot ( \mathbb I _N \otimes E_H ) } \\
+		&\leq \norm{\mathbb I _N \otimes \frac{J_D}{D}} \cdot \norm{P} \cdot \norm{ \mathbb I _N \otimes E_H} \\
+		&\leq 1 \cdot 1 \cdot 1 \\
+		&\leq 1
+	\end{align}
+	
+	Then, 
+	\begin{align}
+		\norm{E^{(4)}} 
+		&\leq \norm{ (1 - \lambda_H) \lambda_H + \lambda_H (1 - \lambda_H) + \lambda_H ^2} \\
+		&= (1 - \lambda_H) \lambda_H + \lambda_H (1 - \lambda_H) + \lambda_H ^2 \\ 
+		&= 2 \lambda_H (1 - \lambda_H) + \lambda_H^2 \\
+		&= 1 - (1 - \lambda_H)^2
+	\end{align}
+	\begin{mdframed}
+		\paragraph{Summary of Above}
+		\begin{align}
+			M_F
+			&= (\mathbb I _N \otimes M_H ) \cdot P_G \cdot ( \mathbb I _ N \otimes M_H ) \\
+			&= (1 - \lambda_H)^2 \underbrace{\left( \mathbb I _N \otimes \frac{J_D}{D} \right) \cdot P \cdot \left( \mathbb I _N \otimes \frac{J_D}{D} \right)}_{\alpha} + E^{(4)} \label{eq:zig zag m_f expanded form with e4}
+		\end{align}
+		where 
+		\begin{equation}
+			\norm{E^{(4)}} \leq 1 - (1 - \lambda_H) ^2
+		\end{equation}
+	\end{mdframed}
+	
+	We can massage and transform this result with 
+	\begin{align}
+		\alpha 
+		&= \frac{1}{D^2} ( \mathbb I _N \otimes J_D ) \cdot P \cdot ( \mathbb I _N \otimes J_D )  \\
+		&= \frac{1}{D^2} \cdot A_G \otimes J_D \\
+		&= \frac{A_G}{D} \otimes \frac{J_D}{D} \\
+		&= M_G \otimes \frac{J_D}{D}
+	\end{align}
+	and plug back into Eq. \ref{eq:zig zag m_f expanded form with e4} to get
+	\begin{equation}
+		M_F = (1 - \lambda_H)^2 \left( M_G \otimes \frac{J_D}{D} \right ) + E^{(4)} \label{eq:zig zag M_f replaced form}
+	\end{equation}
+	
+	Recall from Lemma \ref{lemma: zig zag la 1} that
+	\begin{equation}
+		M_G = (1 - \lambda_G) \cdot \frac{J_N}{N} + \lambda_G \cdot E_G \quad \quad \text{where} \quad \norm{E_G} \leq 1
+	\end{equation}
+	plugging this back into Equation \ref{eq:zig zag M_f replaced form}, we get 
+	\begin{align}
+		M_F
+		&= (1 - \lambda_H) ^ 2 (1 - \lambda_G) \left( \frac{J_N \otimes J_D}{ND} \right) + (1 - \lambda_H ) ^2 \cdot \lambda_G \left( E_G \otimes \frac{J_D}{D} \right) + E^{(4)} \\
+		&= (1 - \lambda_H)^2 (1 - \lambda_G) \frac{J_{ND}}{ND} + \underbrace{(1 - \lambda_H)^2 \cdot \lambda_G \cdot \left( E_G \otimes \frac{J_D}{D} \right) + E^{(4)}}_{E^{(5)}}
+	\end{align}
+	
+	We can quantify $\norm{E^{(5)}}$ as 
+	\begin{align}
+		\norm{E^{(5)}}
+		& \leq ( 1- \lambda_H)^2 \cdot \lambda_G \cdot \norm{E_G \otimes \frac{J_D}{D}} + \norm{ E^{(4)}} \\
+		& \leq ( 1- \lambda_H)^2 \cdot \lambda_G \cdot 1 + 1 - (1 - \lambda_H) ^2 \\
+		& = {1 - (1 - \lambda_G) \cdot (1 - \lambda_H) ^ 2}
+	\end{align}
+	
+	\begin{mdframed}
+		\paragraph{Summary of Above}
+		\begin{equation}
+			M_F = (1 - \mu) \cdot \frac{J_{ND}}{ND} + E^{(5)} \quad\quad \text{where} \quad \norm{E^{(5)}} \leq 1 - (1 - \lambda_G) \cdot (1 - \lambda_H) ^ 2
+		\end{equation}
+		i.e., the second largest eigenvalue of $M_F$ is at most $1 - (1 - \lambda_G) \cdot (1 - \lambda_H) ^ 2$ (by Lemma \ref{lemma: zig zag la 1}). 
+	\end{mdframed}
+	
+	This concludes the proof. \qed
+\end{proof}
 
 
-
-
-
-
-
-
-
-
-
-
-
+\section{Undirected s-t Connectivity in Log Space}
 
 
 
