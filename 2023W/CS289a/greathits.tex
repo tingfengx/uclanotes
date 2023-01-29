@@ -189,7 +189,7 @@ Notes reorganized from \url{https://hackmd.io/@raghum/greathits}.\newline \newli
 
 \tableofcontents
 
-\chapter{Undirected s-t Connectedness}
+\chapter{SL = L: Undirected connectivity in Logspace}
 
 \section{Computing Resources}
 Four main computing resources that we consider as limited (and measure the performance of our algorithms against)
@@ -645,6 +645,7 @@ which is the largest diameter of any connected component?
 \paragraph{Example} Figure \ref{fig:consistent-labeling-1} depicts a consistent edge labelling of the graph. 
 
 \begin{definition}[Zig Zag Product]
+	\label{def:zig zag product}
 	\textbf{Input \& Output}
 	\begin{equation}
 		\left. \begin{aligned}
@@ -812,7 +813,7 @@ If fact this sum that we called $E$ is the Eigen decomposition of $E$ itself!
 		& \quad \quad + (1 - \lambda_H) \lambda_H \underbrace{\left( \mathbb I _N \otimes \frac{J_D}{D} \right) \cdot P \cdot ( \mathbb I _N \otimes E_H )}_{E^{(1)}} \\
 		& \quad \quad + \lambda_H ( 1-\lambda_H) \underbrace{(\mathbb I _N \otimes E_H ) \cdot P \cdot \left( \mathbb I _N \otimes \frac{J_D}{D} \right)}_{E^{(2)}}  \\
 		& \quad \quad + \lambda_H^2 \cdot \underbrace{(\mathbb I _N \otimes E_H ) \cdot P \cdot (\mathbb I _N \otimes E_H )} _{E^{(3)}} \\
-		&= ( 1- \lambda_H )^2 \left( \mathbb I _N \otimes \frac{J_D}{D} \right) P \left( \mathbb I _N \otimes \frac{J_D}{D} \right) + \underbrace{(1 - \lambda_H)\lambda_H E^{(1)} + \lambda_H(1 - \lambda_H) E^{(2)} + \lambda_H^2 E^{(3)}}_{E^{(4)}} \label{eq:zig zag expanded M_F}\\
+		&= ( 1- \lambda_H )^2 \left( \mathbb I _N \otimes \frac{J_D}{D} \right) P \left( \mathbb I _N \otimes \frac{J_D}{D} \right) + \underbrace{(1 - \lambda_H)\lambda_H E^{(1)} + \lambda_H(1 - \lambda_H) E^{(2)} + \lambda_H^2 E^{(3)}}_{E^{(4)}} \label{eq:zig zag expanded M_F}
 	\end{align}
 	
 	Here, $\norm {E^{(1)}}, \norm {E^{(2)}}, \norm {E^{(3)}} \leq 1$ by applying Lemma \ref{lemma: zig zag la 2} multiple times. I present the proof for $\norm{E^{(1)}} \leq 1$ here.
@@ -890,8 +891,108 @@ If fact this sum that we called $E$ is the Eigen decomposition of $E$ itself!
 
 
 \section{Undirected s-t Connectivity in Log Space}
+\subsection{The Procedure}
+\begin{algorithm}[USTCONN Log Space]
+This is a four step procedure, with input $G = (V, E)$ and two nodes $s, t$ in the graph. We wish to output if $s, t$ are connected with each other. 
+
+\begin{itemize}
+	\item \textbf{Step 1.} Transform 
+		\begin{equation}
+			(G, s, t) \leadsto (G_0, s_0, t_0)
+		\end{equation}
+		where $G_0$ is a $B^2$ regular graph, for some constant $B$. \footnote{For example, we have the power to transform any graph into a 4-regular graph using the algorithm detailed previously.}
+	\item \textbf{Step 2.} Fix $H$, a $(B^4, B, 1/4)$ graph. 
+	\item \textbf{Step 3.} For $k \gets 1, \dots, L$, compute\footnote{Invariant: $G_k$ is always a $B^2$ regular graph. }\footnote{Remark: $|G_k| = N \cdot B^{4k}$. We than think of vertices in $G_k$ as $\bar v \equiv (v, a_1, a_2, \dots, a_k)$ where $v$ is a vertex in $G_0$ and $a_.$ is a vertex name in $H$. }
+		\begin{equation}
+			G_k = G_{k - 1}^2 \tcircle{z} H
+		\end{equation}
+	\item \textbf{Step 4.} Solve $s_{L}$, $t_{L}$ connectivity on $G_L$ by path enumeration.  
+\end{itemize}	
+\end{algorithm}
+
+\subsection{Path Enumeration Path Length Analysis}
+Let $\lambda_k$ denote the second largest eigenvalue of a connected component of $G_k$. We know from Thm. \ref{thm:rozenmann vadhan 05 rvw 01} that 
+\begin{equation}
+	\lambda_k \leq 1 - (1 - \lambda_H) ^ 2 \cdot ( 1- \lambda_{k - 1} ^2 ) 
+\end{equation}
+where we have $\lambda_{k - 1} ^2$ because $G_k = G_{k - 1}^2 \tcircle{z} H$. By assumption on $H$ that $\lambda_H \leq 1/4)$, 
+\begin{align}
+	&\lambda_k \leq 1 - \left( \frac{3}{4} \right) ^ 2 \cdot (1 - \lambda_{k - 1}^2 ) \\
+	\implies & \left( \frac{3}{4} \right) ^ 2 ( 1 - \lambda_{k - 1}^2 ) \leq 1 - \lambda_k \\
+	\implies & \left( \left ( \frac{3}{4} \right) \cdot ( 1 + \lambda_{k - 1} ) \right) ( 1 - \lambda_{k - 1} )  \leq (1 - \lambda_k) \\
+	\implies & (1 - \lambda_k) \geq \min \left( \frac{1}{18}, \frac{35}{32} ( 1 - \lambda_{k - 1} ) \right )
+\end{align}
+
+\begin{proposition} 
+If $L = \mathcal O (\log N_0 )$, then we will have 
+\begin{equation}
+	1 - \lambda_L \geq \frac{1}{18} \quad \quad \iff 
+	\quad \quad \lambda_L \leq \frac{17}{18}
+\end{equation}	
+\end{proposition}
+
+\begin{proposition}
+	Path enumeration on $G_L$ results in paths of length 
+	\begin{equation}
+		\Delta = \mathcal O \left( \log _{\frac{1}{\lambda_L}} N_L \right) = \mathcal O \left( \log N_0 \right)
+	\end{equation}
+\end{proposition}
+\begin{proof}
+	By invariant stated above, 
+	\begin{equation}
+		N_L = N_0 \cdot B^{4L}
+	\end{equation}
+	then the path length bound becomes
+	\begin{equation}
+		\log _{\frac{1}{\lambda_L}} N_L \leq \log_{\frac{18}{17}} N_L \leq \mathcal O( \log N_0 ) + \mathcal (L )
+	\end{equation}
+\end{proof}
 
 
+\subsection{Space Complexity}
+\paragraph{Input} We are given the raw input graph $G_0$, original source and target $s_0, t_0$. Recall from earlier that we can label vertices in $G_L$ as
+\begin{equation}
+	(v\in G_0, a_1 \in V_H, a_2 \in V_H, \dots, a_L \in V_H)
+\end{equation}
+which is a path that we took from a vertex in $G_0$ via a series of steps labeled with vertices in $H$. 
+
+\paragraph{Goal} Given a sequence of edge labels in $G_L$, 
+$
+	(e_1, e_2, \dots, e_\Delta)
+$
+we have to check where we end in $G_L$. 
+
+\paragraph{Idea}
+Recall that the original goal is to compute this query space efficiently. In particular, that means we don't have the luxury of computing out the entire $G_L$ graph. We can instead compute the rotation maps 
+\begin{equation}
+	Rot_{G_k}: [N_k] \times [B^2] \rightarrow [N_k] \times [B^2]
+\end{equation}
+recursively, following $G_k = G^2_{k - 1} \tcircle {z} H$. 
+
+\paragraph{Recursive Computation}
+Suppose we are to compute 
+\begin{equation}
+	Rot_{G_k}\left( (v, a_1, a_2, \dots, a_k) , e \in [B^2] \right)
+\end{equation}
+given $Rot_{G_{k - 1}}$. We can compute $Rot_{G^2_{k - 1} \tcircle {z} H}$ using the steps outlined in Definition \ref{def:zig zag product}. Unwinding, 
+\begin{equation}
+	Rot_{G^2_{k - 1}} \left( \bar v, ( f_1, f_2 ) \right) = Rot_{G_{k - 1}} \left( Rot_{G_{k - 1}} (\bar v, f_1 ) , f_2 \right)
+\end{equation}
+where $f_1, f_2$ are edge labels in $G_{k - 1}$. 
+
+\paragraph{Space Complexity}
+With some careful book keeping, we can implement the recursive procedure outlined above with a total of 
+\begin{equation}
+	\mathcal O (\log N )
+\end{equation}
+extra memory. 
+
+
+\section{Expander Graphs}
+
+
+
+\chapter{Sensitivity Conjecture}
 
 
 
