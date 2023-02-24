@@ -1,0 +1,214 @@
+\chapter{Sunflower Conjecture}
+
+\section{Sunflower Lemma}
+
+\begin{definition}
+	[Sunflowers (Erd\"os-Rado, 1960's)]
+	Take $f = \{ s_1 , \dots, s_m \}$ is a sunflower if all pairwise intersections are the same. i.e., 
+	\begin{equation}
+		S_i \cap S_j = S_k \cap S_e \quad \quad \text{if} \quad i \neq j, k \neq e.
+	\end{equation}
+	
+	\textbf{\textit{Equivalently, }}
+	$S_1, \dots, S_m$ is a sunflower if the ``core''
+	\begin{equation}
+		C = S_1 \cap S_2 \cap \dots \cap S_m
+	\end{equation}
+	are such that 
+	\begin{equation}
+		S_1 \text{\textbackslash} C, S_2 \text{\textbackslash} C, \dots, S_m \text{\textbackslash} C
+	\end{equation}
+	are disjoint
+\end{definition}
+
+\begin{lemma}
+	[Sunflower Lemma (Erd\"os-Rado, 1962)] 
+	Take $f = \{ S_1, \dots, S_m \} \subseteq [n]$, \footnote{
+	This is a bit of abuse of notation. We really meant $S_i \subseteq [n], \forall i$ and $f$ is a set of such subsets. 
+	}
+	where $|S_i| \leq k, \forall i \in [m]$. Then $S$ contains a $r$-sunflower if 
+	\begin{equation}
+		m \geq (r - 1)^k \cdot k!
+	\end{equation}
+	
+	\paragraph{English Explanation} This essentially says that any large collection of sets (large enough) must contain a sunflower. Interestingly enough, this expression does not depend on the size of universe, $n$. 
+\end{lemma}
+
+\begin{proof}
+	The proof is an induction on $k$. 
+	\paragraph{Base Case} $k = 1$. Then $S_i, S_j$ are disjoint and $m > (r - 1) \implies m \geq r$. So all of $f$ is a sunflower with empty core.
+	\paragraph{Inductive Step} There are two cases to consider. Suppose the family $f$ had $ \geq r$ disjoint sets, then we are done. Otherwise, we choose some maximal collection of disjoint sets
+	\begin{equation}
+		S_{i1}, S_{i2}, ..., S_{il} \quad \quad \text{where} \quad l \leq r - 1
+	\end{equation}
+	This means that we cannot add another set that is disjoint from these. In particular, every other set must intersect with one of these sets. Now, call 
+	\begin{equation}
+		A \triangleq S_{i1} \cup S_{i2} \cup \dots \cup S_{il}
+	\end{equation} 
+	then the total number of elements in $A$ is bounded by 
+	\begin{align}
+		|A| 
+		&\leq k \cdot l  \\
+		&\leq k \cdot (r - 1) 
+	\end{align}
+	Now, every set $S_i$ must intersect $A$. Then, some element $a \in A$ must occur in $ \geq \alpha = m / |A|$ many sets. 
+	\begin{align}
+		\alpha 
+		&\geq \frac{m}{k\cdot(r - 1)} \\
+		&\geq \frac{(r - 1)^k \cdot k!}{k \cdot (r - 1)} \\
+		&= (r - 1)^{k - 1} \cdot (k - 1)! \\
+		\implies &m \geq (r - 1)^k \cdot k!
+	\end{align}
+	This concludes the proof. \qed
+\end{proof}
+
+\begin{proposition}
+	[Erd\"os-Rado Conjecture]
+	For every $r$, there is some constant $c_r$, such that if $m > c_r^k$, then it contains a $r$-sunflower. 
+\end{proposition}
+
+\begin{theorem}
+	[ALWZ, 2020]
+	There exists a constant $C$ such that if $f = \{ S_1, \dots, S_m \} \subseteq [n]$ and $|S_i| \leq k$, and if $m > (c \cdot r \cdot \log k ) ^k$, then $f$ contains a $r$-sunflower. 
+\end{theorem}
+
+\begin{definition}
+	[Link of a Set System]
+	Take $f = \{ S_1, \dots, S_m \} \subseteq [n]$. Suppose $I \subseteq [n]$, then define the link of $I$ in $f$ as 
+	\begin{equation}
+		f_i = \{ S_i : S_i \supseteq I \} \quad \quad \overline {f_I} = \{ S_i \setminus I : S_i \supseteq I \}
+	\end{equation}
+\end{definition}
+
+\begin{definition}
+	[Spread]
+	A set system $f = \{ S_1, S_2, \dots, S_m \} \subseteq [n]$, where each $|S_i| \leq k$, is $s$-spread if 
+	\begin{itemize}
+		\item $|f| \geq s^k$, and 
+		\item $\forall I \subseteq [n], |f_I| \leq s^{k - |I|} \cdot |f|$
+	\end{itemize}
+\end{definition}
+
+\begin{lemma}
+	[Main Lemma, ALWZ20]
+	If $f$ is $s$-spread for 
+	\begin{equation}
+		s = c \cdot \log ( r k ) \log \log (r k)
+	\end{equation}
+	then $f$ contains $r$ disjoint sets. 
+\end{lemma}
+
+\begin{proposition}
+	Main Lemma implies new sunflower lemma bounds. 	
+\end{proposition}
+
+\begin{proof}
+	Suppose we have 
+	\begin{equation}
+		|f| \geq C(r, k)^k = s^k = (c \cdot \log ( r k ) \log \log (r k)) ^k
+	\end{equation}
+	If there exists a $I$ such that $|f_I| > s^{-|I|}$, then we are done. We see
+	\begin{align}
+		|f_I| 
+		&\geq s^{-|I|} (c \cdot \log ( r k ) \log \log (r k))^k \\
+		&= s^{k - |I|} \\
+		&\geq \left( 
+			c \cdot \log (r (k - |I|)) \cdot \log \log (r \cdot (k - |I|))
+		\right)^{k - |I|}
+	\end{align}
+	so we rely on induction for this proof. If $\forall I$, $|f_I| < s^{- |I|} \cdot |f|$. Then, $f$ is $s$-spread ad by main lemma $f$ contains $r$ disjoint sets. \qed
+\end{proof}
+
+\section{Robust Sunflower Lemma}
+\begin{lemma}
+	[Robust Sunflower Lemma (RSL)]
+	Consider $f$ as $s-spread$, and $w$ is a random subset of $[n]$ of size $\lfloor \frac{n}{r} \rfloor$. Then, 
+	\begin{equation}
+		Pr_{w} [\exists j, S_j \subseteq W] \geq 1 - \frac{1}{2r}
+	\end{equation}
+\end{lemma}
+
+It is natural to wonder why we need this different form of the Sunflower Conjecture. In fact, this more robust RSL implies the Main lemma. 
+\begin{proof}
+	
+\end{proof}
+
+
+\begin{proposition}
+	RSL $\implies$ MSL. 
+\end{proposition}
+This stronger form of the conjecture comes in handy when we are doing induction, we can have a more powerful hypothesis in the induction step. 
+
+\begin{proof}
+	Intuitively, consider the system to be a ``spread'' one, as then we can sample random patches $W$'s of the total space $[n]$, each of size $\lfloor \frac{n}{r} \rfloor$ elements. We expect that a patch covers some set $S_i$ with a reasonable chance ($(1 - \frac{1}{2r})$ stated in theorem). If this is the case, then if we take $r$ patches, we immediately know
+	\begin{align}
+		\text{RSL} \implies 
+		\begin{cases}
+			Pr[\exists j, S_j \subseteq W_1] = Pr[E_1] \geq 1 - \frac{1}{2r} \\
+			Pr[\exists j, S_j \subseteq W_2] = Pr[E_2] \geq 1 - \frac{1}{2r} \\
+			\quad \quad \vdots \\
+			Pr[\exists j, S_j \subseteq W_r] = Pr[E_r] \geq 1 - \frac{1}{2r} 
+		\end{cases}
+	\end{align}
+	Then, we can take the union bound of events to bound $Pr$[everything above happens at the same time] as 
+	\begin{align}
+		Pr[E_1 \cup E_2 \cup \dots \cup E_r] 
+		&\leq Pr[E_1] + Pr_[E_2] + \dots + Pr[E_r] \\
+		&= r \cdot \frac{1}{2r} \\
+		&= \frac{1}{2} \\
+		&> 0
+	\end{align}
+	So there $\exists$ $r$ disjoint sets. \qed
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

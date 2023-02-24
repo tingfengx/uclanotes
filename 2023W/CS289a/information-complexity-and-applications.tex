@@ -1,0 +1,383 @@
+\chapter{Information Complexity and Applications}
+
+\section{Communication Complexity}
+Consider the setup where there are two parties Alice holding some information $x$ and Bob holding some other information $y$. The goal is to compute a function $f(x, y)$ that possibly depends on information from both parties. How we exchange these information for the sake of computing $f$ is called a protocol. The question now is ``what is the best protocol in terms of number of bits exchanged''? Few ways exist
+
+\begin{definition}
+	[Deterministic Protocol]
+	Denoted as $Det$, where we compute $f(x, y)$ exactly. 
+\end{definition}
+
+\begin{definition}
+	[Randomized Protocol]
+	Denoted as $Rand$, where we want to output the correct answer with probability $\geq$, say, $\frac{9}{10}$. Two types of randomized protocols exist, named in terms of if the random bits are shared or kept private. \footnote{A good example to think about is fixing random seed for a pseudorandom number generator makes the random bits public.}
+\end{definition}
+
+\begin{definition}
+	[Protocol Complexities]
+	\begin{itemize}
+		\item $Det(f)$ = minimum number of bits needed to compute $f$, exactly
+		\item $R_{0-1}^{private}(f)$ = minimum number of bits needed to compute $f$ with probability $\geq$ 0.9 and private random bits. 
+		\item $R_{0-1}^{public}(f)$ = minimum number of bits needed to compute $f$ with probability $\geq$ 0.9 and public random bits.
+	\end{itemize}
+\end{definition}
+
+\begin{proposition}
+	[Protocol Complexities' Relationship]
+	\begin{equation}
+		Det(f) \geq R_{0-1}^{private}(f) \geq R_{0-1}^{public}(f)
+	\end{equation}
+\end{proposition}
+
+As an example, consider the equality test, where $EQ: \{0, 1\} ^n \times \{0, 1\} ^n  \rightarrow \{ 0, 1\}$ where $EQ(x, y) = 1$ if $x = y$ and $0$ otherwise. We have
+\begin{itemize}
+	\item $Det(EQ) \leq n$; further, we claim that $Det (EQ) = n$.
+	\item $R_{0 - 1}^{public}(EQ) \leq 5 \leq \mathcal O (1)$, and 
+	\item $R_{0 - 1}^{private}(EQ) \leq \mathcal O ( \log n ) + \mathcal O (1 )$
+\end{itemize}
+
+\begin{proposition}
+	\begin{equation}
+		R_{0-1}^{private}(EQ) \leq c \cdot \log n
+	\end{equation}
+\end{proposition}
+
+\begin{theorem}
+	[Newman, 91]
+	\begin{equation}
+		R_{0 - 1}^{private}(f) \leq R_{0-1}^{public}(f) + \mathcal O (\log n )
+	\end{equation}
+	and 
+	\begin{equation}
+		Det(f) \leq 2 ^{ \mathcal O \left( R_{0 -1}^{private} (f) \right) }
+	\end{equation}
+\end{theorem}
+
+\section{Applications of Communication Complexity}
+\subsection{NOF \& NIH Models}
+Number on Forehead (NOF) and Number in Hand (NIH) models were proposed by Chandra, Furst, Lipton in 83. In NIH, each party (say four parties A, B, C, D) holds onto their own piece of information and they communicate and compute $f(x_1, \dots, x_4)$ which is exactly our original model. In NOF, however, each party have access to all the rest information except for their own piece. In either case, communication is defined using a ``Blackboard'' model where each party can come to the board and write down information to communicate. At the end of the day, communication cost is the total number of bits written on the board. 
+
+Let's now take a look at $f = ZERO$ where $ZERO(x_1, \dots x_m) = 1$ if $\sum_{i = 1}^m x_i = 0$ and $0$ otherwise. 
+
+\begin{proposition}
+	\begin{equation}
+		Det_{NOF}(ZERO) \leq \log N + \mathcal O (1)
+	\end{equation}
+\end{proposition}
+
+\begin{theorem}
+	[Tighter Version (CFL, 83)]
+	\begin{equation}
+		Det_{NOF}(ZERO) \leq \mathcal O \left( \sqrt{ \log N } \right) 
+	\end{equation}
+\end{theorem}
+
+\subsection{AP-Free Coloring}
+\begin{definition}
+	[Ap-Free Coloring]
+	Coloring $\{ -N, -N + 1, \dots, N - 1, N\}$ with $p$ colors such that there is no monochromatic 3-term arithmetic progression. i.e., no $a, b, c$ are of the same color such that $b - a = c - b$. 
+\end{definition}
+
+
+
+
+%%%%%%%%%%%%% TODO
+
+
+\section{Lower Bounds on Communication}
+Consider the disjunction operation, defined as 
+\begin{definition}
+	[Two Party Disjunction]
+	$DIST_n: \{ 0, 1\}^ n \times \{ 0 , 1\}^n \rightarrow \{ 0, 1\}$ where $DIST_n (x, y)$ is equal to $1$ if at all indices $i$, $x_i \land y_i = 0$; and zero otherwise.  
+\end{definition}
+
+\begin{theorem}
+	\label{thm: lowerbound on communication}
+	\begin{equation}
+		Det(DIST_n) = n \quad \quad R_{0 - 1}(DIST_n) \geq \Omega(n) 
+	\end{equation}
+\end{theorem}
+
+\section{Shannon's Information Theory}
+We start with a measure for randomness. 
+\begin{definition}
+	[Entropy of RV \& Conditional Entropy]
+	The entropy of a random variable measures how chaotic it is. 
+	\begin{equation}
+		H(X) = \sum_{x \in Supp(X)} Pr[X = x] \cdot \log_2 \left( \frac{1}{Pr [X = x]} \right)
+	\end{equation}
+	We can also measure entropy for a conditional random variable. In this case
+	\begin{equation}
+		H(X|Y) = \mathbb E_{y \gets Y} [H(X | Y = y)] = \sum_{y \in Supp(Y)} Pr[Y = y] \cdot H (X | Y = y)
+	\end{equation}
+\end{definition}
+
+\begin{proposition}
+	[Properties of Entropy] 
+	\begin{itemize}
+		\item $H(X, Y) = H(Y) + H(X | Y) \leq H(Y) + H(X)$
+		\item $H(X | Y) \leq H(X)$
+	\end{itemize}
+\end{proposition}
+
+\begin{definition}
+	[Mutual Information]
+	Mutual Information quantifies the mutual dependence between two random variables, and is defined as
+	\begin{equation}
+		I(X;Y) = H(X) + H(Y) - H(X, Y) = H(X) - H(X | Y)
+	\end{equation}
+\end{definition}
+
+\begin{proposition}
+	[Independent Mutual Information]
+	If two random variables $X, Y$ are independent, then
+	\begin{equation}
+		I(X;Y) = 0
+	\end{equation}
+	where knowing information about one tells you zero additional information. 
+\end{proposition}
+
+\begin{definition}
+	[Conditional Mutual Information]
+	\begin{equation}
+		I(X;Y|Z) = \mathbb E _{Z = \delta} [I (X|_{Z = \delta} ; Y|_{Z = \delta} )]
+	\end{equation}
+\end{definition}
+
+Clearly, the conditional mutual information is equal to zero for independent random variables, i.e. For
+\begin{equation}
+	X, Y, Z \sim Bin(0, 1) \quad \quad I(X;Y) = 0 \quad I(X;Y|Z) = 0
+\end{equation}
+It is more interesting to look at the case where some variables are dependent on each other. Consider the case where $X, Y \sim Bin(0, 1)$ with $Z \in \{0,1\}$ such that $X \oplus Y \oplus Z = 0$.\footnote{
+	$\oplus$ means XOR.
+} This means
+\begin{equation}
+	(x,y,z) \in \begin{cases}
+		(0,0,0) \\
+		(1,1,0) \\
+		(1,0,1) \\
+		(0,1,1) 
+	\end{cases}
+\end{equation}
+where if we discard the $z$ position, the distribution is uniform random across a two dimensional binary space. In this case
+\begin{equation}
+	I(X;Y) = I(X;Z) = I(Y;Z) = 0
+\end{equation}
+while 
+\begin{equation}
+	I(X;Y|Z) = 1
+\end{equation}
+
+\begin{definition}
+	[Entropy Chain Rule]
+	\begin{equation}
+		H(X_1, \dots, X_n) = \sum_{j = 1}^n H(X_j | X_1, \dots, X_{j - 1}) 
+	\end{equation}
+	where each $X_j$ in the expansion is conditioned on everything that comes before it. 
+\end{definition}
+
+\begin{definition}
+	[Mutual Information - Vector RVs and RV] 
+	Consider random vector $X = (X_1, \dots, X_n)$. We can measure the mutual information between a random vector and a random variable. 
+	\begin{equation}
+		I(X; Z) = I(X_1, \dots, X_n ; Z) = \sum_{j = 1}^n I (X_j ; Z | X_1, \dots , X_{j - 1})
+	\end{equation}
+	Note that this formulation does not tell us about the mutual information between the components of $X$. Rather, it only says about the relationship between $X$ and $Y$. 
+\end{definition}
+
+\begin{proposition}
+	[Sub-additivity of Entropy]
+	\begin{equation}
+		H(X_1, \dots, X_n) \leq H(X_1) + H(X_2) + \dots + H(X_n)
+	\end{equation}
+\end{proposition}
+
+\section{Information Complexity}
+\begin{definition}
+	[Distributional Communication Complexity]
+	Consider some randomized protocol $\pi$ such that 
+	\begin{equation}
+		\forall X, Y\quad \quad Pr_{\sim \pi}[\pi(X, Y) = DISJ_n(X, Y)] \geq 0.9
+	\end{equation}
+	which means we have some protocol that can answer $DISJ_n(X, Y)$ correctly 90\% of the time then ($\implies$) any distribution $\mu$ on $X\times Y$ has such that
+	\begin{equation}
+		Pr_{\sim \pi; (x, y) \overset{\gets}{\sim} \mu} [\pi(X, Y) = DISJ_n(X, Y)] \geq 0.9
+	\end{equation}
+	which means we will be able to answer $DISJ_n(X,Y)$ correctly 90\% of the time for \textit{\textbf{any random input}}.  
+	
+	\paragraph{English} For every question that I throw at you, if you have 90\% chance answering it correctly, then that means if I ask a random question you will succeed 90\% of the time. The implied is a weaker statement but it suffices for our purpose. 
+	
+	\paragraph{Distributional Communicational Complexity} 
+	\begin{equation}
+		R_{0-1, \mu}(DISJ_n) = \text{minimum \# of bits needed to achieve above guarantee}. 
+	\end{equation}
+\end{definition}
+
+\paragraph{Examples}
+Consider this $\mu$. $X$ is a random string where last $n/2$ bits are zero. $Y$ is a random string where the first $n/2$ bits are zero. Then, 
+\begin{equation}
+	R_{0-1,\mu}(DISJ_n) = 1
+\end{equation}
+because they are always disjoint, and they can always output `yes disjoint' and they will be correct. 
+
+As a second example, consider $\mu$ such that $X$ and $Y$ are independent completely random strings $\in \{0,1\}^n$. In this case, it is extremely likely that the two random strings have some overlap. Then, $DISJ_n$ becomes very easy to answer, as both parties only have to answer `not disjoint'. Thus
+\begin{equation}
+	R_{0-1, \mu}(DISJ_n) = 1
+\end{equation}
+Note that 
+\begin{equation}
+	Pr[DISJ_n(X, Y) = 1] = \left( \frac{3}{4} \right) ^n 
+\end{equation}
+but for reasonably large $n$ this converges to zero. 
+
+\begin{definition}
+	[Information Cost of a Protocol]
+	Consider $x, y \gets \mu$. 
+	\begin{equation}
+		IC(\pi, \mu) = I(X;\pi |Y) + I(Y; \pi |X)
+	\end{equation}
+	which is the total amount of \textbf{new} information that both parties learnt from the protocol. To make sure that the quantification is on new information learnt, we condition out each parties own information. 
+\end{definition}
+
+\begin{proposition}
+	\begin{equation}
+		IC(\pi, \mu) \leq |\pi|
+	\end{equation}
+	which says that the information that both parties learnt is at most the length of the protocol. 
+\end{proposition}
+
+\begin{proof}
+	\paragraph{Intuitive} 
+	\begin{align}
+		I(X;\pi |Y) \leq H(\pi)
+	\end{align}
+	and 
+	\begin{align}
+		I(Y;\pi |X) \leq H(\pi)
+	\end{align}
+	then
+	\begin{equation}
+		IC(\pi, \mu) = I(X;\pi |Y) + I(Y; \pi |X) \leq 2H(\pi) \leq 2 \cdot |\pi|
+	\end{equation}
+	but since in each individual round only one party can learn new information (the speaker does not learn new information), with some careful book keeping and chain rule, we can derive $IC(\pi, \mu) \leq |\pi|$. 
+	\paragraph{Proof Sketch}
+	\begin{align}
+		IC(\pi, \mu) 
+		&= I(X;\pi |Y) + I(Y; \pi |X) \\
+		&= O(X; \pi_1, \dots, \pi_r |Y ) + I(Y ; \pi_1, \dots, \pi_r |X) \\
+		&= \sum_{j = 1}^r \left[ I(X; \pi_j |Y, \pi_, \dots, \pi_{j - 1} ) + I(Y; \pi_j |Y, \pi_, \dots, \pi_{j - 1} ) \right] \\
+		&\leq \sum_{j = 1}^r H(\pi_j | \pi_1, \dots, \pi_{j - 1} ) \\
+		&= H(\pi)
+	\end{align}
+	where again we utilize the fact that in each round only one person learns new information. 
+\end{proof}
+
+\begin{definition}
+	[Information Cost of Function]
+	... takes a max-min formulation
+	\begin{equation}
+		IC_{0-1}(f) = \max_{\text{all dist } \mu} IC_\mu (f)
+	\end{equation}
+	where (consider $P$ to be the set of protocols that can compute $f$ with a accuracy of $0.9$)
+	\begin{equation}
+		IC_\mu(f) = \min_{\pi \in P} IC(\pi, \mu)
+	\end{equation}
+	To summarize, 
+	\begin{equation}
+		IC(f) = \max_\mu \min_\pi IC(\pi, \mu)
+	\end{equation}
+\end{definition}
+
+\begin{proposition}
+	\begin{equation}
+		IC_{0-1}(f) \leq R_{0-1}(f)
+	\end{equation}
+\end{proposition}
+
+\begin{definition}
+	[Functions of Multi-variate Input/Output]
+	We had $f: A \times B \rightarrow \{0, 1\}$. We now define
+	\begin{equation}
+		f^{\otimes n}: A^n \times B^n \rightarrow \{0, 1\}^n
+	\end{equation}
+	where $f^{\otimes n} ((a_1, \dot, a_n), (b_1, \dots, b_n)) = $ compute all answers.  
+\end{definition}
+
+\begin{theorem}
+	\begin{equation}
+		IC(f^{\otimes n}) \geq n \cdot IC(f)
+	\end{equation}
+	and with equality at limit
+	\begin{equation}
+		\lim_{n \rightarrow \infty} \frac{IC(f^{\otimes n})}{n} = IC(f)
+	\end{equation}
+	This theorem intuitively says that you cannot make things up: there is no savings for multivariate $f$, you still have to compute everything. 
+\end{theorem}
+
+\begin{theorem}
+	[BBCR10]
+	\begin{equation}
+		n \cdot R_{0 - 1}(f) \leq \frac{1}{\sqrt{n}} R_{0 - 1}(f^{\otimes n} ) 
+	\end{equation}
+\end{theorem}
+
+\section{Proof of Thm.: Lower Bounds on Communication}
+We now take a look at the big picture. Recall that we wanted to show $R_{0-1}(DISJ_n) \geq \Omega (n)$ and we know the following
+\begin{itemize}
+	\item $R_{0-1}(DISJ_n) \geq IC(DISJ_n)$
+	\item $(\dagger)\,\, IC_\mu(DISJ_n) \geq n \cdot IC_\mu(NAND)$ \footnote{Notice that $DISJ_n(X, Y) = \bigwedge_{i = 1}^n NAND(x_i, y_i)$, which is why we introduce $NAND$ function in this chain. }
+	\item $(\ddag)\,\, IC_\mu(NAND) \geq 0.01$
+\end{itemize}
+
+We first show $(\dagger)$ for a specific distribution, called Razborov's Distribution
+\begin{definition}
+	[Razborov's Distirbution]
+	A tuple shaped random variable $(X, Y)$ such that $(x, y) \sim (X, Y)$ has the following probability density function
+	\begin{equation}
+		pdf_{Razborov}(x, y) = \begin{cases}
+			1/3 & (x, y) = (0, 0) \\
+			1/3 & (x, y) = (0, 1) \\
+			1/3 & (x, y) = (1, 0) \\
+			0 & (x, y) = (1, 1)
+		\end{cases}	
+	\end{equation}
+	Notice that under this definition, each person's marginal distribution is a bit biased. 
+\end{definition}
+
+\begin{theorem}
+	[An Upper-bound, Piece 1]
+	If there exists a protocol $\pi$ for $DISJ_n$ that is correct on all $x, y$ with probability 0.9, then there exists a protocol $\pi'$ for $NAND$ that is correct on all $x, y$ with probability 0.9, and 
+	\begin{equation}
+		IC(\pi', \mu) \leq \frac{1}{n} \cdot IC(\pi, \mu^n)
+	\end{equation}
+\end{theorem}
+
+\begin{theorem}
+	[Piece 2]
+	If $\pi'$ is a protocol that is correct on all $x, y$ with prob 0.9, then 
+	\begin{equation}
+		IC(\pi', \mu) \geq 0.01 
+	\end{equation}
+\end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

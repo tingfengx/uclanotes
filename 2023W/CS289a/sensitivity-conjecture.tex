@@ -249,21 +249,64 @@ If $|H| = 2^{n - 1}$, i.e. exactly half of the graph, then in this case we can c
 	\begin{equation}
 		\lambda_1(M) \geq \lambda_2(M) \geq \lambda_3(M) \geq \dots \geq \lambda_N(M)
 	\end{equation}
-	its sub-matrix $M_{-1}$ is a $(n - 1) \times (n - 1)$ matrix with interlacing eigenvalues
+	its sub-matrix $M_{-1}$ is a $(n - 1) \times (n - 1)$ matrix, obtained by deleting $i$-th row and $i$-th column, with interlacing eigenvalues
 	\begin{equation}
 		\lambda_i(M) \geq \lambda_i (M_{-1}) \geq \lambda_{i + 1} (M)
 	\end{equation}
 \end{theorem}
 
+\begin{corollary}
+	[General Form, Repeating Interlacing]
+	Let $A$ be a symmetric matrix in $\real^{n \times n}$, and $B \in \real^{M \times M}$ be a principal sub-matrix, with
+	\begin{equation}
+		\lambda_N(A) \leq \lambda_{N - 1} (A) \leq \dots \leq \lambda_1(A)
+	\end{equation}
+	and 
+	\begin{equation}
+		\lambda_M(B) \leq \lambda_{M - 1} (B) \leq \dots \leq \lambda_1(B)
+	\end{equation}
+	Then, 
+	\begin{equation}
+		\lambda_{N - M + i}(A) \leq \lambda_i(B) \leq_i(A)
+	\end{equation}
+\end{corollary}
 
+\begin{theorem}
+	[Hao Huang, 2019]
+	For any subgraph $H$ of $H_n$ of $\geq 2^{n - 1} + 1$ vertices, it has 
+	\begin{equation}
+		max-degree(H) \geq \sqrt{ n }
+	\end{equation}	
+\end{theorem}
 
+\begin{proof}
+	We know that $max-degree(H) \geq $ largest eigenvalue of $B$ where $B$ is the principal matrix corresponding to vertices in the subgraph of $B_n$. Then, by Cauchy Interlacing Theorem, we have
+	\begin{equation}
+		\lambda_1(B) \geq \lambda_{N - M + 1}(B_n) \geq \lambda_{2^{n - 1}} (B_n) \geq \sqrt{ n }
+	\end{equation}
+	This completes the proof. \qed
+\end{proof}
 
+\begin{proposition}
+	$\forall n, \exists $ a signing $B_n$ of $H_n$ such that 
+	\begin{equation}
+		B_n^2 = n \cdot \mathbb I _{2^n}
+	\end{equation}
+\end{proposition}
 
+\begin{proposition}
+	If $B_n$ is as above, then it has $2^{n - 1}$ eigenvalues that are $\sqrt {n}$ and the other $2^{n - 1}$ eigenvalues take value $-\sqrt{n}$. 
+\end{proposition}
 
-
-
-
-
-
-
+\begin{proof}
+	We know that $B_n^2 = n \cdot \mathbb I _ {2 ^ n}$, so every eigenvalue of $B_n$ satisfies $\lambda^2 = n$. This implies 
+	\begin{equation}
+		\lambda \in \{ \sqrt{n}, - \sqrt{n} \}
+	\end{equation}
+	Recall that the trace of a symmetric matrix is the sum its eigenvalues. Then here, 
+	\begin{equation}
+		Tr(B_n) = 0
+	\end{equation}
+	since $B_n$ must have zero diagonal entries. Hence it must be the case that out of $2^n$ total eigenvalues, half of them are $-\sqrt{n}$ while the other half have value $\sqrt{n}$. \qed
+\end{proof}
 
