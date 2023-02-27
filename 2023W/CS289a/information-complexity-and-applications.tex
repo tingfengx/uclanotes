@@ -360,12 +360,30 @@ We first show $(\dagger)$ for a specific distribution, called Razborov's Distrib
 	\end{equation}
 \end{theorem}
 
+\begin{definition}
+	[Information Cost of Function]
+	Consider function $f: X \times Y \rightarrow \{0, 1\}$, and some distribution $\mu$ over $X \times Y$. Define 
+	\begin{equation}
+		IC_{\mu, \varepsilon} = \inf _{\text{protocols $\pi$ that compute $f$ with error $\leq \varepsilon$}} IC(\pi, \mu)
+	\end{equation}
+	To be more specific, the protocol $\pi$ here is such that
+	\begin{equation}
+		\forall (x, y), \quad Pr[\pi(x, y) = f(x, y) ] \geq 1 - \varepsilon
+	\end{equation}
+	Finally define information cost of a function as 
+	\begin{equation}
+		IC_{\varepsilon} (f) = \max_\mu IC_{\mu, \varepsilon} (f)
+	\end{equation}
+\end{definition}
 
+We will use a handy notation for distributions across $n$ composite functions $f^{\otimes n}$. For $\sigma$, a distribution over $\{0, 1\}$, we consider $\mu \equiv \sigma^n$ as a distribution over $\{0, 1\}^n \times \{0, 1\}^n$. 
 
-
-
-
-
+\begin{proposition}
+	\begin{itemize}
+		\item $IC_{\sigma, \varepsilon} (NAND) \leq \frac{1}{n} \cdot IC_{\sigma^n, \varepsilon} (DISJ_n)$ 
+		\item $\Omega_{\varepsilon} (1) = IC_{\sigma, \varepsilon} (NAND)$
+	\end{itemize}
+\end{proposition}
 
 
 

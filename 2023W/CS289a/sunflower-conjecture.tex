@@ -145,10 +145,24 @@ where each $V_i$ is a random subset of what's left of size $\frac{n}{rt}$.
 %	Suppose that there exists $j$ such that $|\chi(j, V)| = 0$ then there exists some set that has been fully covered. 
 %\end{proposition}
 %
-%\begin{proposition }
-%	[Refined RSL]
-%\end{proposition }
 
+\begin{proposition}
+	[First Refined RSL]
+	If $f$ is $s$-spread and $V$ is a random subset of $\lfloor \frac{n}{rt} \rfloor$. Then, 
+	\begin{equation}
+		\mathbb E_{j \in [m], V} [|\chi (j, V) |] \leq k \cdot \left( 1 - \frac{1}{\log s} \right) 
+	\end{equation}
+\end{proposition}
+
+\begin{proposition}
+	[Second Refined RSL]
+	If $f$ is $s$-spread, $U$ is a set and $V$ is a random subset of size $\lfloor \frac{n}{rt} \rfloor$. Then, 
+	\begin{equation}
+		\mathbb E_{j \in [m], V} [ | \chi (j, U \cup V ) | ] \leq \mathbb E _{j, U} [|\chi (j, U) |] \cdot \left( 1 - \frac{1}{\log s} \right) 
+	\end{equation}
+\end{proposition}
+
+\paragraph{TODO} add lecture 9 from min 1:10
 
 \begin{proposition}
 	RSL $\implies$ MSL. 
