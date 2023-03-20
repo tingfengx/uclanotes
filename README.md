@@ -9,7 +9,7 @@
   
 ### **Notes**
 #### &#128210; 2023 Winter Quarter
-- [**CS289a**](./2023W/CS289a/greathits.pdf). Great Theory Hits of 21st Century. 
+- [**CS289a**](./2023W/CS289a/greathits.pdf). Great Theory Hits of 21st Century. SL=L: undirected connectedness in losspace. Combinatorial measures and sensitivity conjecture. Sunflower conjecture with variants of sunflower lemmas. Information complexity, communication complexity: models and randomized versions. Extension complexity, views of LPs, and non-negative rank. 3-progression and Roth's theorem. 
 #### &#128210; 2022 Winter Quarter
 - [**CS262a**](./2022W/CS262a/bayesian.pdf/). Bayesian Networks. The focus of this course is on the theory and practice of knowledge representation and reasoning under uncertainty within the framework of probabilistic graphical models---with a major emphasis on Bayesian belief networks.
   
