@@ -609,8 +609,7 @@ but we will prove it from a more principle way.
 	\label{lemma:rectanglelemma}
 	If $R$ is a rectangle such that $R\cap U = \emptyset$, then $|R \cap D| \leq 2^n$. 
 \end{lemma}
-We will take this lemma as granted for now. 
-%(will present the proof later)
+We will take this lemma as granted for now. (proof in Section \ref{sec:proofofrectanglelemma})
 
 Let's take a look at the size of $D = \{ (a, b) : |a \cap b| = 0 \}$. Notice that there are three out of four options (00, 01, 10) that satisfies this condition ($\cap$ is just like $\land$). Hence, the size of $D$
 \begin{equation}
@@ -623,44 +622,87 @@ Hence, if $R_1, \dots, R_r$ are such that (1) $\bigcup_{i = 1}^r R_i = D$, and (
 \end{equation}
 which means we are done!!
 
-%\subsection{Proof of Lemma \ref{lemma:rectanglelemma} (Rectangle Lemma)}
-%Recall the statement: If $R$ is a rectangle such that $R\cap U = \emptyset$, then $|R \cap D| \leq 2^n$. 
+\subsection{Proof of Lemma \ref{lemma:rectanglelemma} (Rectangle Lemma)\label{sec:proofofrectanglelemma}}
+Recall the statement: If $R$ is a rectangle such that $R\cap U = \emptyset$, then $|R \cap D| \leq 2^n$. We prove this statement with induction. 
 
- 
+\begin{proof}
+	Base Case: $n = 1$. If $R \cap U = \emptyset$, then $|R \cap D | \leq 2$. See Figure \ref{fig:rectanglelemma-basecase} for illustration of base case scenario. Clearly, to select rectangles from $D$, we can only have rectangles that are the first row, the first column or just one single box. 
+	
+	\begin{figure}
+		\center 
+		\includegraphics[width=0.3\textwidth]{figs/rectanglelemma-basecase.png}
+		\caption{Base Case illustration for rectangle lemma.}
+		\label{fig:rectanglelemma-basecase}
+	\end{figure}
+	
+	Induction Step. Suppose the statement is true for $n - 1$. Then, we have a $n \times n$ rectangle that can be split into four quadrants, according to their first coordinate. See Figure \ref{fig:rectanglelemma-is} for an illustration. The inner blue-ish part is the original rectangle. Notice that breaking a rectangle into quadrants by fixing one coordinate results in four rectangles.
+	
+	Call $b_{-1} = (b_2, \dots, b_n)$ and $a_{-1} = (a_2, \dots, a_n)$. Then define
+	\begin{equation}
+		R_{-1} = \left\{ 
+			(a_{-1}, b_{-1}) : ((0, a_{-1}), (0, b_{-1})) \in R \quad OR \quad ((0, a_{-1}), (1, b_{-1})) \in R
+		\right\}
+	\end{equation}
+	similarly for columns 
+	\begin{equation}
+		C_{-1} = \left\{ 
+			(a_{-1}, b_{-1}) : ((0, a_{-1}), (0, b_{-1})) \in R \quad OR \quad ((1, a_{-1}), (0 , b_{-1})) \in R
+		\right\}
+	\end{equation}
+	
+	Then, we immediately know 
+	\begin{equation}
+		R_{-1} \cap U_{n-1} = \emptyset
+	\end{equation}
+	which must be true since $R \cap U = \emptyset$. This implies, by induction, that
+	\begin{equation}
+		|R_{-1} \cap D_{n - 1}| \leq 2^{n - 1}
+	\end{equation}
+	
+	For column, similarly, 
+	\begin{equation}
+		C_{-1} \cap U_{n - 1} = \emptyset \quad \overset{(induction)}{\implies} \quad |C_{-1} \cap D_{n-1} | \leq 2^{n-1}
+	\end{equation}
+	
+	Ideally, $|R \cap D| \leq |R_{-1} \cap D_{n - 1} | + |C_{-1} \cap D_{n - 1}|$. To show this, we need to rule out the case where we select something in all of the quadrant except for the bottom right one. Imagine we have 
+	\begin{equation}
+		\begin{cases}
+			((0, a_{-1}), (0, b_{-1})) \in R \\
+			((1, a_{-1}), (0, b_{-1})) \in R \\
+			((0, a_{-1}), (1, b_{-1})) \in R
+		\end{cases}
+	\end{equation}
+	but then this would imply $((1, a_{-1}), (1, b_{-1})) \in R$ because of exchange property, which implies $R\cap U \neq \emptyset$ which results in a contradiction. So it must be the case that $|R \cap D| \leq |R_{-1} \cap D_{n - 1} | + |C_{-1} \cap D_{n - 1}|$. This completes the proof. \qed
+	
+	\begin{figure}
+		\center 
+		\includegraphics[width=0.9\textwidth]{figs/rectanglelemma-is.png}
+		\caption{Inductive step illustration for rectangle lemma.}
+		\label{fig:rectanglelemma-is}
+	\end{figure}
+\end{proof}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+\paragraph{Proof Structure Look Back} 
+\begin{equation}
+	\begin{matrix}
+		nnr(M_n) \geq (3/2)^n \\
+		\downdownarrows \quad (FMPTW12) \\
+		nnr(PartialSlack(CP_n)) \geq (3/2)^n \\
+		\downdownarrows \quad (Y88) \\
+		nnr(Slack(CP_n)) \geq (3/2)^n \\
+		\downdownarrows \quad (Y88) \\
+		XC(CP_n) \geq (3/2)^n
+	\end{matrix}
+\end{equation}
+In a chain
+\begin{align}
+	(3/2)^n 
+	&\leq nnr(M_n) \\
+	&= nnr(PartialSlack(CP_n)) \\
+	&\leq nnr(Slack(CP_n)) \\
+	&\leq XC(CP_n)
+\end{align}
+where the step $nnr(Slack(CP_n))$ involves a brilliant application of Farkas' Theorem. 
 
 
 
